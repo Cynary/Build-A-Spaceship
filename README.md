@@ -1,4 +1,4 @@
 Build-A-Spaceship
 =================
 
-6.073 Project 2
+6.073 Project 3

@@ -3,7 +3,21 @@
 from __future__ import print_function
 from collections import defaultdict
 
+# A mapping from the one-letter keys to the full names for ship stats.
+STAT_NAMES = {
+        "S": "speed",
+        "C": "capacity",
+        "A": "attack",
+        "H": "health",
+        }
+
+
 class Effect(object):
+    """ A set of changes to one or more stats.  """
+    # TODO(tchajed): an effect cannot currently include failing the mission
+    # automatically. This could be implemented as a large negative health
+    # effect, though.
+
     def __init__(self, deltas):
         self.deltas_ = deltas
 
@@ -39,6 +53,10 @@ class Effect(object):
         return " ".join(parts)
 
 class Component(object):
+    """ A ship component.
+
+    Wraps an effect with a name and the semantics of being attachable to a ship.
+    """
     def __init__(self, name, effect):
         self.name_ = name
         self.effect_ = effect
@@ -50,17 +68,22 @@ class Component(object):
     def __str__(self):
         return "{}: {}".format(self.name_, self.effect_)
 
-class EffectPredicate(object):
-    """A predicate on some set of effects."""
-    def __init__(self, effect_checks):
-        self.effect_checks_ = effect_checks
+class StatPredicate(object):
+    """A predicate on some set of properties.
+    
+    In simple terms, represents a function that takes a set of stats and
+    returns true or false. This abstract class only provides the parsing
+    functionality; subclasses determine how the predicates on the various
+    effects are combined.
+    """
+    def __init__(self, stat_checks):
+        self.stat_checks_ = stat_checks
 
     @classmethod
     def from_s(cls, s):
         """ Parse specs of the form C>2 S<1. """
-        effect_checks = {}
-        parts = s.split()
         def gen_check(direction, comparison):
+            """ Create a checker function. """
             if direction not in "<>":
                 raise ValueError("%s not known" % direction)
             def check(quantity):
@@ -70,15 +93,21 @@ class EffectPredicate(object):
                     return quantity < comparison
             return check
 
-        for part in parts:
+        stat_checks = {}
+        for part in s.split():
             key = part[0]
             direction = part[1]
             comparison = int(part[2:])
-            effect_checks[key] = gen_check(direction, comparison)
+            stat_checks[key] = gen_check(direction, comparison)
 
-        return cls(effect_checks)
+        return cls(stat_checks)
 
-class EffectAndPredicate(EffectPredicate):
+class StatPredicateAnd(StatPredicate):
+    """ A predicate that requires that all the individual stat checks pass.
+    
+    An empty And is defined to be true.
+
+    """
     def eval(self, quantities):
         for key, quantity in quantities.iteritems():
             checker = self.effect_checks_.get(key, lambda x: True)
@@ -86,7 +115,12 @@ class EffectAndPredicate(EffectPredicate):
                 return False
         return True
 
-class EffectOrPredicate(EffectPredicate):
+class StatPredicateOr(StatPredicate):
+    """ A predicate that requires that any of the individual stat checks pass.
+    
+    An empty Or is defined to be false.
+    
+    """
     def eval(self, quantities):
         for key, quantity in quantities.iteritems():
             checker = self.effect_checks_.get(key, lambda x: False)
@@ -95,15 +129,17 @@ class EffectOrPredicate(EffectPredicate):
         return False
 
 class Ship(object):
+    """ A ship has some stats and components.
+
+    The ship has a notion of a baseline produced from its components as well as
+    current stats based on the impact of effects, such as those caused by
+    events.
+
+    """
     def __init__(self, initial_stats):
         self.initial_stats_ = initial_stats
         self.stats_ = initial_stats.copy()
         self.components_ = []
-
-    def reset(self):
-        self.stats_ = self.initial_stats_.copy()
-        for component in self.components_:
-            self.stats_ = component.effect.add_to(self.stats_)
 
     @property
     def stats(self):
@@ -125,15 +161,24 @@ class Ship(object):
         component = self.components_.pop(index)
         self.stats_ = component.effect.negate().add_to(self.stats_)
 
+    def reset(self):
+        """ Return the ship stats to those determined by its initial stats and
+        components. """
+        self.stats_ = self.initial_stats_.copy()
+        for component in self.components_:
+            self.stats_ = component.effect.add_to(self.stats_)
+
     def __str__(self):
         parts = []
         for key, value in self.stats.iteritems():
-            effect_name = EFFECT_NAMES[key]
+            property_name = STAT_NAMES[key]
             part = "{}: {}".format(effect_name, value)
             parts.append(part)
         return " ".join(parts)
 
 class ShipLogEntry(object):
+    """ An entry in the ship's log, both what happened and what the result was.
+    """
     def __init__(self, event, effect, is_success):
         self.event_ = event
         self.effect_ = effect
@@ -151,6 +196,13 @@ class ShipLogEntry(object):
 
 
 class Event(object):
+    """ An event has a condition that determine whether a success effect
+    will occur or a failure effect.
+
+    The condition takes the form of a StatPredicate
+
+    Either of the effects could be empty, meaning nothing happens.
+    """
     def __init__(self, name, predicate, success_effect, failure_effect):
         self.name_ = name
         self.predicate_ = predicate
@@ -171,6 +223,7 @@ class Event(object):
         return self.name_
 
 class Mission(object):
+    """ A mission is a sequence of events. """
     def __init__(self, events):
         self.events_ = events
 
@@ -182,9 +235,16 @@ class Mission(object):
             ship.add_effect(entry.effect)
         return log
 
-
 class Menu(object):
+    """ Utility to display and interact with a text menu of options. """
     def __init__(self, items):
+        """ items should be a list of tuples; the first is the key, which is
+        returned to represent the selection, while the second is what gets
+        printed in the menu.
+
+        If there is no natural key, items = enumerate(options) will give the
+        index of the selected option.
+        """
         self.items_ = list(items)
 
     def empty_(self):
@@ -200,6 +260,7 @@ class Menu(object):
             print("%d) %s" % (num+1, item_val))
     
     def try_selection(self, prompt=None):
+        """ Ask the user for a selection and return None if the input is invalid. """
         if self.empty_():
             return None
         if prompt is None:
@@ -216,23 +277,19 @@ class Menu(object):
         return item_key
 
     def get_selection(self, prompt=None):
+        """ Attempt to try_selection until something is selected. """
         sel = None
         while sel is None:
             sel = self.try_selection(prompt)
         return sel
 
-EFFECT_NAMES = {
-        "S": "speed",
-        "C": "capacity",
-        "A": "attack",
-        "H": "health",
-        }
-
 class Game(object):
+    """ A Game provides state management for an in-progress sequence of
+    missions on a ship. """
     main_menu = Menu([
         ("add", "add component"),
         ("remove", "remove component"),
-        ("run", "attempt mission"),
+        ("mission", "attempt mission"),
         ])
     def __init__(self, components, mission):
         self.components_ = components
@@ -240,37 +297,54 @@ class Game(object):
         self.ship_ = Ship({"H": 2, "A": 0, "S": 2, "C": 4})
 
     def execute_action(self):
+        """ Use the main menu to get a top-level action to dispatch to. """
         print("ship:")
         print(self.ship_)
         self.main_menu.display()
         action = self.main_menu.get_selection()
-        def get_component(components, prompt):
-            component_menu = Menu(enumerate(components))
-            component_menu.display()
-            sel_component_index = component_menu.try_selection(prompt)
-            if sel_component_index is None:
-                return None
-            return components[sel_component_index]
         if action == "add":
-            component = get_component(self.components_,
-                    "component to add > ")
-            if component is not None:
-                self.ship_.add_component(component)
+            self.action_add_()
         if action == "remove":
-            component = get_component(self.ship_.components,
-                    "component to remove > ")
-            if component is not None:
-                self.ship_.remove_component(component)
-        if action == "run":
-            log = self.mission_.run_ship(self.ship_)
-            print("results:")
-            for entry in log:
-                print(entry)
-            print("ship finished mission with:")
-            print(self.ship_)
-            self.ship_.reset()
+            self.action_remove_()
+        if action == "mission":
+            self.action_mission_()
+
+    def get_component_(self, components, prompt):
+        component_menu = Menu(enumerate(components))
+        component_menu.display()
+        sel_component_index = component_menu.try_selection(prompt)
+        if sel_component_index is None:
+            return None
+        return components[sel_component_index]
+
+    def action_add_(self):
+        """ Add a component. """
+        component = self.get_component_(self.components_,
+                "component to add > ")
+        if component is None:
+            return
+        self.ship_.add_component(component)
+
+    def action_remove_(self):
+        """ Remove a component. """
+        component = self.get_component(self.ship_.components,
+                "component to remove > ")
+        if component is None:
+            return
+        self.ship_.remove_component(component)
+
+    def action_mission_(self):
+        """ Attempt a mission. """
+        log = self.mission_.run_ship(self.ship_)
+        print("results:")
+        for entry in log:
+            print(entry)
+        print("ship finished mission with:")
+        print(self.ship_)
+        self.ship_.reset()
 
     def play(self):
+        # TODO(tchajed): there's no way to end the game
         while True:
             self.execute_action()
 

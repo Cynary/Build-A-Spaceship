@@ -110,7 +110,7 @@ class StatPredicateAnd(StatPredicate):
     """
     def eval(self, quantities):
         for key, quantity in quantities.iteritems():
-            checker = self.effect_checks_.get(key, lambda x: True)
+            checker = self.stat_checks_.get(key, lambda x: True)
             if not checker(quantity):
                 return False
         return True
@@ -123,7 +123,7 @@ class StatPredicateOr(StatPredicate):
     """
     def eval(self, quantities):
         for key, quantity in quantities.iteritems():
-            checker = self.effect_checks_.get(key, lambda x: False)
+            checker = self.stat_checks_.get(key, lambda x: False)
             if checker(quantity):
                 return True
         return False
@@ -171,8 +171,8 @@ class Ship(object):
     def __str__(self):
         parts = []
         for key, value in self.stats.iteritems():
-            property_name = STAT_NAMES[key]
-            part = "{}: {}".format(effect_name, value)
+            stat_name = STAT_NAMES[key]
+            part = "{}: {}".format(stat_name, value)
             parts.append(part)
         return " ".join(parts)
 
@@ -327,7 +327,7 @@ class Game(object):
 
     def action_remove_(self):
         """ Remove a component. """
-        component = self.get_component(self.ship_.components,
+        component = self.get_component_(self.ship_.components,
                 "component to remove > ")
         if component is None:
             return
@@ -355,7 +355,7 @@ def main():
             ]
 
     events = [
-            Event("bandits", EffectOrPredicate.from_s("A>0 S>2"),
+            Event("bandits", StatPredicateOr.from_s("A>0 S>2"),
                 Effect.from_s("+1C"),
                 Effect.from_s("-1C"))
             ]

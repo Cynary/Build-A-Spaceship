@@ -26,7 +26,7 @@ class Ship
 
 	// Dummy component
 	//
-	static private var emptyComponent:Component = new Component();
+	static public var emptyComponent:Component = new Component();
 
 	// Base stats here
 	//

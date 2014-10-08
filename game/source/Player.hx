@@ -1,11 +1,13 @@
 package;
 
 import Date;
+import flixel.addons.ui.FlxUIList;
 
 class Player
 {
 	private var money:Int;
 	private var ship:Ship;
+	private var carrying:Component = Ship.emptyComponent;
 
 	public function new(initialMoney:Int, initialShip:Ship)
 	{
@@ -18,9 +20,26 @@ class Player
 		this.ship = ship;
 	}
 
-	public function buyComponent(component:Component, spot:Int):Bool
+	public function pickup(component:Component)
 	{
-		if (money < component.getCost())
+		carrying = component;
+	}
+
+	public function drop()
+	{
+		carrying = Ship.emptyComponent;
+	}
+
+	public function getCarrying()
+	{
+		return carrying;
+	}
+
+	public function buyComponent(spot:Int):Bool
+	{
+		var component = carrying;
+		carrying = Ship.emptyComponent;
+		if (money < component.getCost() || !ship.emptySpot(spot))
 		{
 			return false;
 		}
@@ -30,16 +49,20 @@ class Player
 	}
 
 	public function getShip():Ship { return ship; }
+	public function getMoney():Int { return money; }
 
 	public function sellComponent(spot:Int)
 	{
-		var component = ship.removeComponent(spot);
-		money += component.getCost();
+		if (!ship.emptySpot(spot))
+		{
+			var component = ship.removeComponent(spot);
+			money += component.getCost();
+		}
 	}
 
 	public function goMission():FlxUIList
 	{
-		cptLog = new CaptainLog(Date.now());
+		var cptLog = new CaptainLog(Date.now());
 		cptLog.add(10*60*10000, "dummy entry");
 		return cptLog.createSprite(640, 480);
 	}

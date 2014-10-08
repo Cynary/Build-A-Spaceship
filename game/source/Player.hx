@@ -71,7 +71,7 @@ class Player
 		{
 			var banditShip1 = new Ship(5,0,0,1);
 			var banditShip2 = new Ship(10,0,0,1);
-			var banditShip3 = new Ship(10,4,1,3);
+			var banditShip3 = new Ship(10,4,2,3);
 			var mission:Array<Events.BanditsEvent> = [
 				new Events.BanditsEvent(cptLog,banditShip1),
 				new Events.BanditsEvent(cptLog,banditShip2),

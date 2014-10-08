@@ -65,7 +65,7 @@ class Ship
 		currentCargo += component.getCargo();
 	}
 
-	public function removeComponent(spot:Int)
+	public function removeComponent(spot:Int):Component
 	{
 		// Is this a valid spot?
 		//
@@ -85,6 +85,8 @@ class Ship
 		currentCargo -= component.getCargo();
 
 		components[spot] = emptyComponent;
+
+		return component;
 	}
 
 	public function addSpot()

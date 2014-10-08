@@ -21,5 +21,5 @@ class Component
 	public function getAttack() { return attack; }
 	public function getSpeed() { return speed; }
 	public function getCargo() { return cargo; }
-	public function getcost() { return cost; }
+	public function getCost() { return cost; }
 }

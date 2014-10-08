@@ -63,7 +63,32 @@ class Player
 	public function goMission():FlxUIList
 	{
 		var cptLog = new CaptainLog(Date.now());
-		cptLog.add(10*60*10000, "dummy entry");
+		if (ship.getSpeed() == 0)
+		{
+			cptLog.add(0,"Your ship did not have the power to get off the ground.");
+		}
+		else
+		{
+			var banditShip1 = new Ship(5,0,0,1);
+			var banditShip2 = new Ship(10,0,0,1);
+			var banditShip3 = new Ship(10,4,1,3);
+			var mission:Array<Events.BanditsEvent> = [
+				new Events.BanditsEvent(cptLog,banditShip1),
+				new Events.BanditsEvent(cptLog,banditShip2),
+				new Events.BanditsEvent(cptLog,banditShip3),
+			];
+			for (event in mission)
+			{
+				event.applyEvent(ship);
+			}
+			money += cptLog.getMoney();
+
+			ship.reset();
+			if (cptLog.isDestroyed())
+			{
+				ship.resetComponents();
+			}
+		}
 		return cptLog.createSprite(640, 480);
 	}
 }

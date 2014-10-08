@@ -14,53 +14,53 @@ using flixel.util.FlxSpriteUtil;
 
 private class PickupCaller
 {
-	private var component:Component;
-	private var player:Player;
-	public function new(player:Player, component:Component)
-	{
-		this.component = component;
-		this.player = player;
-	}
+    private var component:Component;
+    private var player:Player;
+    public function new(player:Player, component:Component)
+    {
+        this.component = component;
+        this.player = player;
+    }
 
-	public function clickFn()
-	{
-		if (player.getCarrying() == component)
-		{
-			player.drop();
-			trace('dropped ${component.getName()}');
-		}
-		else
-		{
-			player.pickup(component);
-			trace('picked up ${component.getName()}');
-		}
-	}
+    public function clickFn()
+    {
+        if (player.getCarrying() == component)
+        {
+            player.drop();
+            trace('dropped ${component.getName()}');
+        }
+        else
+        {
+            player.pickup(component);
+            trace('picked up ${component.getName()}');
+        }
+    }
 }
 
 private class ShipCaller
 {
-	private var player:Player;
-	private var spot:Int;
-	public function new(player:Player, spot:Int)
-	{
-		this.player = player;
-		this.spot = spot;
-	}
+    private var player:Player;
+    private var spot:Int;
+    public function new(player:Player, spot:Int)
+    {
+        this.player = player;
+        this.spot = spot;
+    }
 
-	public function clickFn()
-	{
-		var component:Component = player.getCarrying();
-		if (component == Ship.emptyComponent)
-		{
-			player.sellComponent(spot);
-			trace('Sold component ${component.getName()} in spot $spot');
-		}
-		else
-		{
-			player.buyComponent(spot);
-			trace('Bought component ${component.getName()} in spot $spot');
-		}
-	}
+    public function clickFn()
+    {
+        var component:Component = player.getCarrying();
+        if (component == Ship.emptyComponent)
+        {
+            player.sellComponent(spot);
+            trace('Sold component ${component.getName()} in spot $spot');
+        }
+        else
+        {
+            player.buyComponent(spot);
+            trace('Bought component ${component.getName()} in spot $spot');
+        }
+    }
 }
 
 private class StatText extends FlxText
@@ -87,15 +87,19 @@ class BuildState extends FlxUIState
     private var _btnEnginel2:FlxButton;
     private var _btnEnginel3:FlxButton;
 
-	private var ship:Ship;
-	private var player:Player;
-	private var enginel1:Component;
-	private var enginel2:Component;
-	private var enginel3:Component;
-	private var turretl1:Component;
-	private var turretl2:Component;
-	private var shield:Component;
-	private var cargo:Component;
+    private var slot0:FlxButton;
+    private var slot1:FlxButton;
+    private var slot2:FlxButton;
+
+    private var ship:Ship;
+    private var player:Player;
+    private var enginel1:Component;
+    private var enginel2:Component;
+    private var enginel3:Component;
+    private var turretl1:Component;
+    private var turretl2:Component;
+    private var shield:Component;
+    private var cargo:Component;
 
     private var statHP:StatText;
     private var statAtk:StatText;
@@ -109,22 +113,22 @@ class BuildState extends FlxUIState
      */
     override public function create():Void
     {
-		// Player manager/finances/ship/...
-		ship = new Ship();
-		player = new Player(10 /*initialMoney*/, ship);
+        // Player manager/finances/ship/...
+        ship = new Ship();
+        player = new Player(10 /*initialMoney*/, ship);
 
-		// Components
-		enginel1 = new Component(-1,0,2,0,1,"enginel1");
-		enginel2 = new Component(-1,0,5,0,3,"enginel2");
-		enginel3 = new Component(-3,0,10,0,8,"enginel3");
+        // Components
+        enginel1 = new Component(-1,0,2,0,1,"enginel1");
+        enginel2 = new Component(-1,0,5,0,3,"enginel2");
+        enginel3 = new Component(-3,0,10,0,8,"enginel3");
 
-		turretl1 = new Component(0,3,0,0,1,"turretl1");
-		turretl2 = new Component(0,6,0,0,4,"turretl2");
+        turretl1 = new Component(0,3,0,0,1,"turretl1");
+        turretl2 = new Component(0,6,0,0,4,"turretl2");
 
-		shield = new Component(1,0,0,0,1,"shield");
-		cargo = new Component(0,0,0,1,1,"cargo");
+        shield = new Component(1,0,0,0,1,"shield");
+        cargo = new Component(0,0,0,1,1,"cargo");
 
-		// GUI buttons
+        // GUI buttons
         _xml_id = "state_build";
 
         // Engines
@@ -141,21 +145,21 @@ class BuildState extends FlxUIState
         add(_btnEnginel3);
 
         // Turrets
-	_btnTurretl1 = new FlxButton(384, 191, "", new PickupCaller(player, turretl1).clickFn);
+        _btnTurretl1 = new FlxButton(384, 191, "", new PickupCaller(player, turretl1).clickFn);
         _btnTurretl1.loadGraphic("assets/gfx/sprites/turretl1.png", false, 32, 32, false);
         add(_btnTurretl1);
 
-_btnTurretl2 = new FlxButton(384, 223, "", new PickupCaller(player, turretl2).clickFn);
+        _btnTurretl2 = new FlxButton(384, 223, "", new PickupCaller(player, turretl2).clickFn);
         _btnTurretl2.loadGraphic("assets/gfx/sprites/turretl2.png", false, 32, 32, false);
         add(_btnTurretl2);
 
         // Shield
-_btnShield = new FlxButton(384, 287, "", new PickupCaller(player, shield).clickFn);
+        _btnShield = new FlxButton(384, 287, "", new PickupCaller(player, shield).clickFn);
         _btnShield.loadGraphic("assets/gfx/sprites/shield.png", false, 32, 32, false);
         add(_btnShield);
 
         // Cargo
-_btnCargo = new FlxButton(384, 319, "", new PickupCaller(player, cargo).clickFn);
+        _btnCargo = new FlxButton(384, 319, "", new PickupCaller(player, cargo).clickFn);
         _btnCargo.loadGraphic("assets/gfx/sprites/cargo.png", false, 32, 32, false);
         add(_btnCargo);
 
@@ -183,6 +187,20 @@ _btnCargo = new FlxButton(384, 319, "", new PickupCaller(player, cargo).clickFn)
 
         statCur = new StatText(283, 355, 32, '${player.getMoney()}');
         add(statCur);
+
+
+        // Ship slots
+        slot0 = new FlxButton(128, 191, "", new ShipCaller(player, 0).clickFn);
+        slot0.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
+        add(slot0);
+
+        slot1 = new FlxButton(160, 191, "", new ShipCaller(player, 1).clickFn);
+        slot1.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
+        add(slot1);
+
+        slot2 = new FlxButton(192, 191, "", new ShipCaller(player, 2).clickFn);
+        slot2.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
+        add(slot2);
 
         super.create();
     }

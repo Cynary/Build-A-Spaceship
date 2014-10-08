@@ -49,13 +49,11 @@ private class ShipCaller
 
     public function clickFn()
     {
+		var previousComponent:Component = ship.getComponent(spot);
         var component:Component = player.getCarrying();
-        if (component == Ship.emptyComponent)
-        {
-            player.sellComponent(spot);
-            trace('Sold component ${component.getName()} in spot $spot');
-        }
-        else
+		player.sellComponent(spot);
+		trace('Sold component ${previousComponent.getName()} in spot $spot');
+        if (component != Ship.emptyComponent)
         {
             player.buyComponent(spot);
             trace('Bought component ${component.getName()} in spot $spot');
@@ -173,11 +171,11 @@ class BuildState extends FlxUIState
         statHP = new StatText(40, 355, 32, '${ship.getHp()}');
         add(statHP);
 
-        statAtk = new StatText(90, 355, 32, '${ship.getAttack()}');
-        add(statAtk);
-
-        statDef = new StatText(140, 355, 32, '${ship.getDefense()}');
+        statDef = new StatText(90, 355, 32, '${ship.getAttack()}');
         add(statDef);
+
+        statAtk = new StatText(140, 355, 32, '${ship.getDefense()}');
+        add(statAtk);
 
         statSpd = new StatText(190, 355, 32, '${ship.getSpeed()}');
         add(statSpd);
@@ -226,6 +224,13 @@ class BuildState extends FlxUIState
         slot0.loadGraphic('assets/gfx/sprites/${comp0 != "" ? comp0 : "empty"}.png', false, 32, 32, false);
         slot1.loadGraphic('assets/gfx/sprites/${comp1 != "" ? comp1 : "empty"}.png', false, 32, 32, false);
         slot2.loadGraphic('assets/gfx/sprites/${comp2 != "" ? comp2 : "empty"}.png', false, 32, 32, false);
+
+		statHP.text = '${ship.getHp()}';
+		statAtk.text = '${ship.getAttack()}';
+		statDef.text = '${ship.getDefense()}';
+		statSpd.text = '${ship.getSpeed()}';
+		statCarg.text = '${ship.getCargo()}';
+		statCur.text = '${player.getMoney()}';
         super.update();
     }
 }

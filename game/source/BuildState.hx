@@ -49,13 +49,11 @@ private class ShipCaller
 
     public function clickFn()
     {
+		var previousComponent:Component = ship.getComponent(spot);
         var component:Component = player.getCarrying();
-        if (component == Ship.emptyComponent)
-        {
-            player.sellComponent(spot);
-            trace('Sold component ${component.getName()} in spot $spot');
-        }
-        else
+		player.sellComponent(spot);
+		trace('Sold component ${previousComponent.getName()} in spot $spot');
+        if (component != Ship.emptyComponent)
         {
             player.buyComponent(spot);
             trace('Bought component ${component.getName()} in spot $spot');

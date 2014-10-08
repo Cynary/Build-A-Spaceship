@@ -50,7 +50,7 @@ private class ShipCaller
     public function clickFn()
     {
         var component:Component = player.getCarrying();
-		var previousComponent:Component = component;//player.getShip().getComponent(spot);
+		var previousComponent:Component = player.getShip().getComponent(spot);
 		player.sellComponent(spot);
 		trace('Sold component ${previousComponent.getName()} in spot $spot');
         if (component != Ship.emptyComponent)
@@ -105,6 +105,11 @@ class BuildState extends FlxUIState
     private var statSpd:StatText;
     private var statCarg:StatText;
     private var statCur:StatText;
+
+	private function goFn() {
+		var sprite = player.goMission();
+		add(sprite);
+	}
 
     /**
      * Function that is called up when to state is created to set it up.

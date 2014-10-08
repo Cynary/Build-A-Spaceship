@@ -63,7 +63,7 @@ class Player
 	public function goMission():FlxUIList
 	{
 		var cptLog = new CaptainLog(Date.now());
-		if (ship.getSpeed() == 0)
+		if (ship.getSpeed() <= 0)
 		{
 			cptLog.add(0,"Your ship did not have the power to get off the ground.");
 		}

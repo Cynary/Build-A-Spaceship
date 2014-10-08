@@ -63,6 +63,17 @@ private class ShipCaller
 	}
 }
 
+private class StatText extends FlxText
+{
+    public function new(x:Int, y:Int, w:Int, text:String)
+    {
+        super(x, y, w);
+        this.setFormat("assets/fonts/font.ttf", 20, FlxColor.WHITE, "center");
+        this.setBorderStyle(FlxText.BORDER_OUTLINE, FlxColor.RED, 1);
+        this.text = text;
+    }
+}
+
 /**
  * A FlxState which can be used for the game's menu.
  */
@@ -85,6 +96,13 @@ class BuildState extends FlxUIState
 	private var turretl2:Component;
 	private var shield:Component;
 	private var cargo:Component;
+
+    private var statHP:StatText;
+    private var statAtk:StatText;
+    private var statDef:StatText;
+    private var statSpd:StatText;
+    private var statCarg:StatText;
+    private var statCur:StatText;
 
     /**
      * Function that is called up when to state is created to set it up.
@@ -145,6 +163,26 @@ _btnCargo = new FlxButton(384, 319, "", new PickupCaller(player, cargo).clickFn)
         var canvas = new FlxSprite();
         canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT, true);
         add(canvas);
+
+
+        // Stats
+        statHP = new StatText(40, 355, 32, '${ship.getHp()}');
+        add(statHP);
+
+        statAtk = new StatText(90, 355, 32, '${ship.getAttack()}');
+        add(statAtk);
+
+        statDef = new StatText(140, 355, 32, '${ship.getDefense()}');
+        add(statDef);
+
+        statSpd = new StatText(190, 355, 32, '${ship.getSpeed()}');
+        add(statSpd);
+
+        statCarg = new StatText(240, 355, 32, '${ship.getCargo()}');
+        add(statCarg);
+
+        statCur = new StatText(283, 355, 32, '${player.getMoney()}');
+        add(statCur);
 
         super.create();
     }

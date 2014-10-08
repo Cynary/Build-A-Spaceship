@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <data>
-    <!-- <sprite src="sprites/build" x="0" y="0" /> -->
+    <sprite src="sprites/build" x="0" y="0" />
 
     <sprite src="sprites/turretl1" x="128" y="191" />
     <sprite src="sprites/enginel1" x="160" y="191" />

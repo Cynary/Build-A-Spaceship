@@ -8,6 +8,9 @@ import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 import flixel.addons.ui.FlxUIState;
 import flixel.util.FlxDestroyUtil;
+import flixel.util.FlxColor;
+
+using flixel.util.FlxSpriteUtil;
 
 /**
  * A FlxState which can be used for the game's menu.
@@ -66,36 +69,41 @@ class BuildState extends FlxUIState
         _xml_id = "state_build";
 
         // Engines
-		_btnEnginel1 = new FlxButton(384, 65, "", clickEnginel1);
-		_btnEnginel1.loadGraphic("assets/gfx/sprites/enginel1.png", false, 32, 32, false);
+        _btnEnginel1 = new FlxButton(384, 65, "", clickEnginel1);
+        _btnEnginel1.loadGraphic("assets/gfx/sprites/enginel1.png", false, 32, 32, false);
         add(_btnEnginel1);
 
-		_btnEnginel2 = new FlxButton(384, 97, "", clickEnginel2);
-		_btnEnginel2.loadGraphic("assets/gfx/sprites/enginel2.png", false, 32, 32, false);
+        _btnEnginel2 = new FlxButton(384, 97, "", clickEnginel2);
+        _btnEnginel2.loadGraphic("assets/gfx/sprites/enginel2.png", false, 32, 32, false);
         add(_btnEnginel2);
 
-		_btnEnginel3 = new FlxButton(384, 129, "", clickEnginel3);
-		_btnEnginel3.loadGraphic("assets/gfx/sprites/enginel3.png", false, 32, 32, false);
+        _btnEnginel3 = new FlxButton(384, 129, "", clickEnginel3);
+        _btnEnginel3.loadGraphic("assets/gfx/sprites/enginel3.png", false, 32, 32, false);
         add(_btnEnginel3);
 
         // Turrets
-		_btnTurretl1 = new FlxButton(384, 191, "", clickTurretl1);
-		_btnTurretl1.loadGraphic("assets/gfx/sprites/turretl1.png", false, 32, 32, false);
+        _btnTurretl1 = new FlxButton(384, 191, "", clickTurretl1);
+        _btnTurretl1.loadGraphic("assets/gfx/sprites/turretl1.png", false, 32, 32, false);
         add(_btnTurretl1);
 
-		_btnTurretl2 = new FlxButton(384, 223, "", clickTurretl2);
-		_btnTurretl2.loadGraphic("assets/gfx/sprites/turretl2.png", false, 32, 32, false);
+        _btnTurretl2 = new FlxButton(384, 223, "", clickTurretl2);
+        _btnTurretl2.loadGraphic("assets/gfx/sprites/turretl2.png", false, 32, 32, false);
         add(_btnTurretl2);
 
         // Shield
-		_btnShield = new FlxButton(384, 287, "", clickShield);
-		_btnShield.loadGraphic("assets/gfx/sprites/shield.png", false, 32, 32, false);
+        _btnShield = new FlxButton(384, 287, "", clickShield);
+        _btnShield.loadGraphic("assets/gfx/sprites/shield.png", false, 32, 32, false);
         add(_btnShield);
 
         // Cargo
-		_btnCargo = new FlxButton(384, 319, "", clickCargo);
-		_btnCargo.loadGraphic("assets/gfx/sprites/cargo.png", false, 32, 32, false);
+        _btnCargo = new FlxButton(384, 319, "", clickCargo);
+        _btnCargo.loadGraphic("assets/gfx/sprites/cargo.png", false, 32, 32, false);
         add(_btnCargo);
+
+        // Extra canvas things
+        var canvas = new FlxSprite();
+        canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT, true);
+        add(canvas);
 
         super.create();
     }

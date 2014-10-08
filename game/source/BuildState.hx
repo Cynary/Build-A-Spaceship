@@ -106,6 +106,8 @@ class BuildState extends FlxUIState
     private var statCarg:StatText;
     private var statCur:StatText;
 
+    private var btnGo:FlxButton;
+
     /**
      * Function that is called up when to state is created to set it up.
      */
@@ -199,6 +201,14 @@ class BuildState extends FlxUIState
         slot2 = new FlxButton(192, 191, "", new ShipCaller(player, 2).clickFn);
         slot2.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
         add(slot2);
+
+
+        // Go
+        btnGo = new FlxButton(480, 415, "", goFn);
+        btnGo.height = 32;
+        btnGo.width = 128;
+        btnGo.loadGraphic("assets/gfx/sprites/go.png");
+        add(btnGo);
 
         super.create();
     }

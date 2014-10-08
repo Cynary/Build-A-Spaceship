@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+    <sprite src="sprites/build" x="0" y="0" />
+
+    <sprite src="sprites/turretl1" x="128" y="191" />
+    <sprite src="sprites/enginel1" x="160" y="191" />
+    <sprite src="sprites/cargo" x="192" y="191" />
+
+    <!-- <sprite src="sprites/enginel1" x="384" y="65" /> -->
+    <!-- <sprite src="sprites/enginel2" x="384" y="97" /> -->
+    <!-- <sprite src="sprites/enginel3" x="384" y="129" /> -->
+    <!-- <sprite src="sprites/turretl1" x="384" y="191" /> -->
+    <!-- <sprite src="sprites/turretl2" x="384" y="223" /> -->
+    <!-- <sprite src="sprites/shield" x="384" y="287" /> -->
+    <!-- <sprite src="sprites/cargo" x="384" y="319" /> -->
+    <!-- <button x="384" y="319" width="32" height="32"> -->
+    <!--   <graphic id="up" image="sprites/cargo" /> -->
+    <!--   <graphic id="over" image="sprites/cargo" /> -->
+    <!--   <graphic id="down" image="sprites/cargo" /> -->
+    <!-- </button> -->
+</data>

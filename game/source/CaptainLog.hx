@@ -22,14 +22,14 @@ class CaptainLog
 
 	public function add(duration:Float, text:String)
 	{
-		dates.push(start);
+		dates.push(Date.fromTime(start.getTime()));
 		texts.push(text);
 		start = DateTools.delta(start, duration);
 	}
 
 	public function createSprite(width:Int, height:Int, x:Int = 0, y:Int = 0):FlxUIList
 	{
-		var entries:Array<IFlxUIWidget> = [for (i in 0...dates.length) new FlxUIText(0,0,width,'Date: ${dates[i].toString()}\n\n${texts[i]}')];
+		var entries:Array<IFlxUIWidget> = [for (i in 0...dates.length) new FlxUIText(0,0,width,'Date: ${dates[i].toString()}\n\n${texts[i]}\n\n')];
 		return new FlxUIList(x,y,entries,width,height);
 	}
 }

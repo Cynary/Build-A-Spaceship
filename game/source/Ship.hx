@@ -45,6 +45,10 @@ class Ship
 		reset();
 	}
 
+    public function getComponent(spot:Int):Component {
+        return components[spot];
+    }
+
 	public function addComponent(component:Component, spot:Int)
 	{
 		// Is this a valid spot?

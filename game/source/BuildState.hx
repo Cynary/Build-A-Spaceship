@@ -220,6 +220,12 @@ class BuildState extends FlxUIState
      */
     override public function update():Void
     {
+        var comp0 = ship.getComponent(0).getName();
+        var comp1 = ship.getComponent(1).getName();
+        var comp2 = ship.getComponent(2).getName();
+        slot0.loadGraphic('assets/gfx/sprites/${comp0 != "" ? comp0 : "empty"}.png', false, 32, 32, false);
+        slot1.loadGraphic('assets/gfx/sprites/${comp1 != "" ? comp1 : "empty"}.png', false, 32, 32, false);
+        slot2.loadGraphic('assets/gfx/sprites/${comp2 != "" ? comp2 : "empty"}.png', false, 32, 32, false);
         super.update();
     }
 }

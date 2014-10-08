@@ -33,7 +33,7 @@ class Ship
 	public function new(hp:Int = 10, defense:Int = 2, attack:Int = 0, speed:Int = 0, cargo:Int = 0, nSpots:Int = 3)
 	{
 		this.nSpots = nSpots;
-		components = [for (i in 1...nSpots) emptyComponent];
+		components = [for (i in 0...nSpots) emptyComponent];
 
 		// Set base stats
 		//
@@ -74,7 +74,7 @@ class Ship
 
 		// Undo the modifiers, and remove the component;
 		//
-		var component = components[spot];
+		var component:Component = components[spot];
 		defense -= component.getDefense();
 		currentDefense -= component.getDefense();
 		attack -= component.getAttack();

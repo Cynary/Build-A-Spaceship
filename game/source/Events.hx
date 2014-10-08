@@ -136,12 +136,12 @@ class BanditsEvent extends Event
 	private var p_randVictory:Float;
 	private var p_randLoss:Float;
 
-	private var text_overPower:String = "over powered";
-	private var text_escape:String = "escaped";
-	private var text_tie:String = "tied";
+	private var text_overPower:String = "over powered, you stole the bandit's money";
+	private var text_escape:String = "escaped from bandits";
+	private var text_tie:String = "tied with bandits";
 	private var text_mutualDestruction:String = "ship and bandit destroyed";
-	private var text_destroy:String = "bandit destroyed";
-	private var text_destroyed:String = "ship destroyed";
+	private var text_destroy:String = "bandit destroyed, you stole its money.";
+	private var text_destroyed:String = "ship destroyed by bandits";
 
 	private var text_randVictory:String = "randomly won";
 	private var text_randLoss:String = "randomly lost";
@@ -163,6 +163,11 @@ class BanditsEvent extends Event
 
 	public override function applyEvent(captainShip:Ship)
 	{
+		if (cptLog.isDestroyed())
+		{
+			return;
+		}
+
 		var duration:Int;
 		var text:String = "";
 		var choice:Float = Math.random();
@@ -185,14 +190,23 @@ class BanditsEvent extends Event
 				case ESCAPE:
 					text = text_escape;
 				case OVER_POWER:
+					cptLog.earnMoney(10);
 					text = text_overPower;
 				case TIE:
 					text = text_tie;
 				case BOTH_DIE:
 					text = text_mutualDestruction;
 				case DESTROY:
-					if (battleResults.winner == captainShip) {text = text_destroy;}
-					else {text = text_destroyed;}
+					if (battleResults.winner == captainShip)
+					{
+						cptLog.earnMoney(10);
+						text = text_destroy;
+					}
+					else
+					{
+						cptLog.destroy();
+						text = text_destroyed;
+					}
 			}
 			captainShip.modHp(battleResults.hpDelta);
 		}

@@ -173,11 +173,11 @@ class BuildState extends FlxUIState
         statHP = new StatText(40, 355, 32, '${ship.getHp()}');
         add(statHP);
 
-        statAtk = new StatText(90, 355, 32, '${ship.getAttack()}');
-        add(statAtk);
-
-        statDef = new StatText(140, 355, 32, '${ship.getDefense()}');
+        statDef = new StatText(90, 355, 32, '${ship.getAttack()}');
         add(statDef);
+
+        statAtk = new StatText(140, 355, 32, '${ship.getDefense()}');
+        add(statAtk);
 
         statSpd = new StatText(190, 355, 32, '${ship.getSpeed()}');
         add(statSpd);
@@ -220,6 +220,12 @@ class BuildState extends FlxUIState
      */
     override public function update():Void
     {
+		statHP.text = '${ship.getHp()}';
+		statAtk.text = '${ship.getAttack()}';
+		statDef.text = '${ship.getDefense()}';
+		statSpd.text = '${ship.getSpeed()}';
+		statCarg.text = '${ship.getCargo()}';
+		statCur.text = '${player.getMoney()}';
         super.update();
     }
 }

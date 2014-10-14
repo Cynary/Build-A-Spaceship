@@ -9,6 +9,8 @@ import flixel.util.FlxMath;
 import flixel.addons.ui.FlxUIState;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxColor;
+import flixel.FlxG;
+import flixel.system.FlxSound;
 
 using flixel.util.FlxSpriteUtil;
 
@@ -16,14 +18,17 @@ private class PickupCaller
 {
     private var component:Component;
     private var player:Player;
+	private var click:FlxSound;
     public function new(player:Player, component:Component)
     {
         this.component = component;
         this.player = player;
+		this.click = FlxG.sound.load(AssetPaths.click__wav);
     }
 
     public function clickFn()
     {
+		this.click.play();
         if (player.getCarrying() == component)
         {
             player.drop();
@@ -41,10 +46,14 @@ private class ShipCaller
 {
     private var player:Player;
     private var spot:Int;
+	private var cancel:FlxSound;
+	private var click:FlxSound;
     public function new(player:Player, spot:Int)
     {
         this.player = player;
         this.spot = spot;
+		this.cancel = FlxG.sound.load(AssetPaths.cancel__wav);
+		this.click = FlxG.sound.load(AssetPaths.click__wav);
     }
 
     public function clickFn()
@@ -55,9 +64,14 @@ private class ShipCaller
 		trace('Sold component ${previousComponent.getName()} in spot $spot');
         if (component != Ship.emptyComponent)
         {
+			this.click.play();
             player.buyComponent(spot);
             trace('Bought component ${component.getName()} in spot $spot');
         }
+		else
+		{
+			this.cancel.play();
+		}
     }
 }
 
@@ -105,8 +119,11 @@ class BuildState extends FlxUIState
     private var statSpd:StatText;
     private var statCarg:StatText;
     private var statCur:StatText;
+	
+	private var goSoundEffect:FlxSound;
 
 	private function goFn() {
+		this.goSoundEffect.play();
 		var sprite = player.goMission();
 		add(sprite);
 	}
@@ -120,6 +137,8 @@ class BuildState extends FlxUIState
         // Player manager/finances/ship/...
         ship = new Ship();
         player = new Player(10 /*initialMoney*/, ship);
+		
+		this.goSoundEffect = FlxG.sound.load(AssetPaths.go__wav);
 
         // Components
         enginel1 = new Component(-1,0,2,0,1,"enginel1");

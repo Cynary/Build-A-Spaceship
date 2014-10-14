@@ -86,6 +86,17 @@ private class StatText extends FlxText
     }
 }
 
+private class ComponentText extends FlxText
+{
+    public function new(x:Int, y:Int, text:String, w:Int = 32*16)
+    {
+        super(x, y, w);
+        this.setFormat("assets/fonts/font.ttf", 20, FlxColor.WHITE, "left");
+        this.setBorderStyle(FlxText.BORDER_OUTLINE, FlxColor.RED, 1);
+        this.text = text;
+    }
+}
+
 /**
  * A FlxState which can be used for the game's menu.
  */
@@ -122,12 +133,22 @@ class BuildState extends FlxUIState
 	
 	private var goSoundEffect:FlxSound;
 
+    private var enginel1Text:ComponentText;
+    private var enginel2Text:ComponentText;
+    private var enginel3Text:ComponentText;
+    private var turretl1Text:ComponentText;
+    private var turretl2Text:ComponentText;
+    private var shieldText:ComponentText;
+    private var cargoText:ComponentText;
+
 	private function goFn() {
 		this.goSoundEffect.play();
 		var sprite = player.goMission();
 		add(sprite);
 	}
     private var btnGo:FlxButton;
+    inline static var componentXOffset = 35;
+    inline static var componentYOffset = 5;
 
     /**
      * Function that is called up when to state is created to set it up.
@@ -148,43 +169,79 @@ class BuildState extends FlxUIState
         turretl1 = new Component(0,3,0,0,1,"turretl1");
         turretl2 = new Component(0,6,0,0,4,"turretl2");
 
-        shield = new Component(1,0,0,0,1,"shield");
-        cargo = new Component(0,0,0,1,1,"cargo");
+        shield = new Component(1,0,0,0,1,"shield", "shield");
+        cargo = new Component(0,0,0,1,1,"cargo", "cargo");
 
         // GUI buttons
         _xml_id = "state_build";
+
 
         // Engines
         _btnEnginel1 = new FlxButton(384, 65, "", new PickupCaller(player, enginel1).clickFn);
         _btnEnginel1.loadGraphic("assets/gfx/sprites/enginel1.png", false, 32, 32, false);
         add(_btnEnginel1);
+        enginel1Text = new ComponentText(
+            384+componentXOffset,
+            65+componentYOffset,
+            '${enginel1.summary()}');
+        add(enginel1Text);
 
         _btnEnginel2 = new FlxButton(384, 97, "", new PickupCaller(player, enginel2).clickFn);
         _btnEnginel2.loadGraphic("assets/gfx/sprites/enginel2.png", false, 32, 32, false);
         add(_btnEnginel2);
+        enginel2Text = new ComponentText(
+            384+componentXOffset,
+            97+componentYOffset,
+            '${enginel2.summary()}');
+        add(enginel2Text);
 
         _btnEnginel3 = new FlxButton(384, 129, "", new PickupCaller(player, enginel3).clickFn);
         _btnEnginel3.loadGraphic("assets/gfx/sprites/enginel3.png", false, 32, 32, false);
         add(_btnEnginel3);
+        enginel3Text = new ComponentText(
+            384+componentXOffset, 
+            129+componentYOffset,
+            '${enginel3.summary()}');
+        add(enginel3Text);
 
         // Turrets
         _btnTurretl1 = new FlxButton(384, 191, "", new PickupCaller(player, turretl1).clickFn);
         _btnTurretl1.loadGraphic("assets/gfx/sprites/turretl1.png", false, 32, 32, false);
         add(_btnTurretl1);
+        turretl1Text = new ComponentText(
+            384+componentXOffset, 
+            191+componentYOffset,
+            '${turretl1.summary()}');
+        add(turretl1Text);
 
         _btnTurretl2 = new FlxButton(384, 223, "", new PickupCaller(player, turretl2).clickFn);
         _btnTurretl2.loadGraphic("assets/gfx/sprites/turretl2.png", false, 32, 32, false);
         add(_btnTurretl2);
+        turretl2Text = new ComponentText(
+            384+componentXOffset, 
+            223+componentYOffset,
+            '${turretl2.summary()}');
+        add(turretl2Text);
 
         // Shield
         _btnShield = new FlxButton(384, 287, "", new PickupCaller(player, shield).clickFn);
         _btnShield.loadGraphic("assets/gfx/sprites/shield.png", false, 32, 32, false);
         add(_btnShield);
+        shieldText = new ComponentText(
+            384+componentXOffset, 
+            287+componentYOffset,
+            '${shield.summary()}');
+        add(shieldText);
 
         // Cargo
         _btnCargo = new FlxButton(384, 319, "", new PickupCaller(player, cargo).clickFn);
         _btnCargo.loadGraphic("assets/gfx/sprites/cargo.png", false, 32, 32, false);
         add(_btnCargo);
+        cargoText = new ComponentText(
+            384+componentXOffset, 
+            319+componentYOffset,
+            '${cargo.summary()}');
+        add(cargoText);
 
         // Extra canvas things
         var canvas = new FlxSprite();

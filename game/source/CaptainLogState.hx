@@ -14,6 +14,8 @@ class CaptainLogState extends FlxState {
     }
 
     override public function create():Void {
+		var soundEffect = FlxG.sound.load(AssetPaths.go__wav);
+		soundEffect.play();
     	var sprite = this.cptLog.createSprite(640-100, 480-100, 50, 50);
     	add(sprite);
     	function goToBuild() {

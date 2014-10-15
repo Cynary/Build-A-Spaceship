@@ -80,7 +80,7 @@ private class StatText extends FlxText
     {
         super(x, y, w);
         this.setFormat("assets/fonts/font.ttf", 20, FlxColor.WHITE, "center");
-        this.setBorderStyle(FlxText.BORDER_OUTLINE, FlxColor.RED, 1);
+        this.setBorderStyle(FlxText.BORDER_OUTLINE, FlxColor.BLACK, 1);
         this.text = text;
     }
 }
@@ -91,7 +91,7 @@ private class ComponentText extends FlxText
     {
         super(x, y, w);
         this.setFormat("assets/fonts/font.ttf", 20, FlxColor.WHITE, "left");
-        this.setBorderStyle(FlxText.BORDER_OUTLINE, FlxColor.RED, 1);
+        this.setBorderStyle(FlxText.BORDER_OUTLINE, FlxColor.BLACK, 1);
         this.text = text;
     }
 }
@@ -149,7 +149,7 @@ class BuildState extends FlxUIState
     private var cargoText:ComponentText;
 
 	private function goFn() {
-		this.goSoundEffect.play();
+		//this.goSoundEffect.play();
 		var cptLog = player.goMission();
         var logState = new CaptainLogState(cptLog);
         FlxG.switchState(logState);
@@ -312,14 +312,14 @@ class BuildState extends FlxUIState
 
         // GUI buttons
         _xml_id = "state_build";
-
-		createButtons();
 		
         // Extra canvas things
         var canvas = new FlxSprite();
         canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT, true);
         add(canvas);
-
+		
+        super.create();
+		
         // Stats
         statHP = new StatText(40, 355, 32, '${ship.getHp()}');
         add(statHP);
@@ -338,8 +338,8 @@ class BuildState extends FlxUIState
 
         statCur = new StatText(283, 355, 32, '${player.getMoney()}');
         add(statCur);
-
-        super.create();
+		
+		createButtons();
     }
 
     /**

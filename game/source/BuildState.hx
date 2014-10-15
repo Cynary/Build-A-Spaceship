@@ -92,6 +92,8 @@ class BuildState extends FlxUIState
     private var statSpd:StatText;
     private var statCarg:StatText;
     private var statCur:StatText;
+
+    private var missionCounter:StatText;
 	
 	private var goSoundEffect:FlxSound;
 
@@ -267,6 +269,9 @@ class BuildState extends FlxUIState
 
         statCur = new StatText(283, 355, 32, '${player.getMoney()}');
         add(statCur);
+
+        missionCounter = new StatText(55, 415, 250, 'Current mission: ${player.getMissionNumber()+1}');
+        add(missionCounter);
 		
 		createButtons();
     }
@@ -315,6 +320,7 @@ class BuildState extends FlxUIState
 		statSpd.text = '${ship.getSpeed()}';
 		statCarg.text = '${ship.getCargo()}';
 		statCur.text = '${player.getMoney()}';
+        missionCounter.text = 'Current mission: ${player.getMissionNumber()+1}';
 
         if (carryingSprite != null) {
             carryingSprite.setPosition(FlxG.mouse.x-16,FlxG.mouse.y-16);

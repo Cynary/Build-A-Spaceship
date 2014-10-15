@@ -54,6 +54,7 @@ class Player
 
 	public function getShip():Ship { return ship; }
 	public function getMoney():Int { return money; }
+	public function getMissionNumber():Int { return missionNumber; }
 
 	public function sellComponent(spot:Int)
 	{

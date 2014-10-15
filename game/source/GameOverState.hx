@@ -13,13 +13,20 @@ import flixel.util.FlxMath;
 class GameOverState extends FlxState
 {
 	var gameOverText:FlxText;
+	var text:String;
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
+
+	 public function new(text:String) {
+    	super();
+    	this.text  = text;
+    }
+
 	override public function create():Void
 	{
 		this.gameOverText = new FlxText(10, 10, 100);
-		this.gameOverText.text = "Out of Money! You Lose!";
+		this.gameOverText.text = text;
 		add(this.gameOverText);
 		super.create();
 	}

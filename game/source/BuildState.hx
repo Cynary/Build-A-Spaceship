@@ -359,7 +359,12 @@ class BuildState extends FlxUIState
     {
         if (player.getMoney() < 0)
         {
-            FlxG.switchState(new GameOverState());
+            FlxG.switchState(new GameOverState("Out of Money! You Lose!"));
+        }
+
+        if (player.getMissionNumber() == 6)
+        {
+            FlxG.switchState(new GameOverState("You've completed all your missions. You win with $" +player.getMoney() + "!"));
         }
         var comp0 = ship.getComponent(0).getName();
         var comp1 = ship.getComponent(1).getName();

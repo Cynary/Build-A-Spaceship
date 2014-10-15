@@ -70,7 +70,7 @@ class Player
 		var cptLog = new CaptainLog(Date.now());
 		if (ship.getSpeed() <= 0)
 		{
-			cptLog.add(0,"Your ship did not have the power to get off the ground.");
+			cptLog.add(0,"Your ship did not have the power to get off the ground.", ship);
 		}
 		else
 		{
@@ -111,12 +111,12 @@ class Player
 			{
 				event.applyEvent(ship);
 				if (ship.getHp() <= 0) {
-					cptLog.add(0.0, "Your ship has no health left and disintegrates into space debris.");
+					cptLog.add(0.0, "Your ship has no health left and disintegrates into space debris.", ship);
 					cptLog.destroy();
 					break;
 				}
 				if (ship.getSpeed() < 0) {
-					cptLog.add(0.0, "Looks like your ship's engines gave out. The ship drifts until the nearest star, then stops drifting.");
+					cptLog.add(0.0, "Looks like your ship's engines gave out. The ship drifts until the nearest star, then stops drifting.", ship);
 					cptLog.destroy();
 					break;
 				}
@@ -127,18 +127,18 @@ class Player
 			if (cptLog.isDestroyed())
 			{
 				ship.resetComponents();
-				cptLog.add(2*60, "You must pay $" + REPAIR_COST + " to get your ship fixed", true );
+				cptLog.add(2*60*1000, "You must pay $" + REPAIR_COST + " to get your ship fixed", ship, true );
 				money -= REPAIR_COST;
 			}
 			else
 			{
 				missionNumber++;
-				cptLog.add(2*60, "You finished your mission and move on to the next.");
+				cptLog.add(2*60*1000, "You finished your mission and move on to the next.", ship);
 
 				money += CARGO_VALUE*ship.getCargo();
 				if (ship.getCargo() > 0)
 				{
-					cptLog.add(2*60, "You earn $" + CARGO_VALUE*ship.getCargo() + " for delivering " + ship.getCargo() + " units of cargo.");
+					cptLog.add(2*60*1000, "You earn $" + CARGO_VALUE*ship.getCargo() + " for delivering " + ship.getCargo() + " units of cargo.", ship);
 				}
 			}
 		}

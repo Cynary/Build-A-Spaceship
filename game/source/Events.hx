@@ -139,19 +139,19 @@ class BanditsEvent extends Event
 	private var p_randVictory:Float;
 	private var p_randLoss:Float;
 
-	private var text_overPower:String = "over powered, you stole the bandit's money";
-	private var text_escape:String = "escaped from bandits";
-	private var text_tie:String = "tied with bandits";
-	private var text_mutualDestruction:String = "ship and bandit destroyed";
-	private var text_destroy:String = "bandit destroyed, you stole its money.";
-	private var text_destroyed:String = "ship destroyed by bandits";
+	private var text_overPower:String = "As we are cruising along space, we come across a bandit ship. They prepare their weapons to fire, and we engage as well. They feel the impact of our weapons, and watch terrified as their attacks bounce off our shields without causing a scratch. They run away in terror, but they are not fast enough to escape us, and we completely over power them, and take their money.";
+	private var text_escape:String = "As we are cruising along space, we come across a bandit ship. Some shots are exchanged, but we decide to escape, since our ship is faster than theirs.";
+	private var text_tie:String = "As we are cruising along space, we come across a bandit ship. They prepare their weapons to fire, and we engage as well. We watch as our attacks bounce off each other's shields. Our ships are equally matched. I tip my hat to the opposing captain, and we part ways.";
+	private var text_mutualDestruction:String = "As we are cruising along space, we come across a bandit ship. We exchange shots, and our ships are equally matched. Both the ships get destroyed in the battle. I write this as the air is sucked from my cabin, it has been a pleasure to serve you, sir.";
+	private var text_destroy:String = "As we are cruising along space, we come across a bandit ship. We exchange shots, and while we take some damage, we eventually destroy the bandit ship, and take their money.";
+	private var text_destroyed:String = "As we are cruising along space, we come across a bandit ship. We exchange shots, but our shields, and hull don't hold together, and we are not able to destroy the ship before ours gets destroyed. I write this as the air is sucked from my cabin, it has been a pleasure to serve you, sir.";
 
-	private var text_randVictory:String = "randomly won";
-	private var text_randLoss:String = "randomly lost";
+	private var text_randVictory:String = "As we are cruising along space, we come across a bandit ship. An angel comes down from heaven, and destroys them. We are not sure what happened, some people in the crew think something got in the food, or in the air vents. All we know is that we won, and took the bandits's money for evidence.";
+	private var text_randLoss:String = "As we are cruising along space, we come across a bandit ship. A demon comes up from hell, and destroys our ship. We are not sure what happened, some people in the crew think something got in the food, or in the air vents. All we know is that our ship is currently falling apart. I write this as the air is sucked from my cabin, it has been a pleasure to serve you, sir.";
 	private var duration_randVictory:Int = 1*BattleResults.turnDuration;
 	private var duration_randLoss:Int = 1*BattleResults.turnDuration;
 
-	public function new(log, banditShip:Ship, p_randVictory:Float = 0.0, p_randLoss:Float = 0.0)
+	public function new(log, banditShip:Ship, p_randVictory:Float = 0.05, p_randLoss:Float = 0.05)
 	{
 		super(log);
 		optional = false;
@@ -174,6 +174,7 @@ class BanditsEvent extends Event
 		var duration:Int;
 		var text:String = "";
 		var choice:Float = Math.random();
+		trace(choice);
 		if (choice <= p_randVictory)
 		{
 			text = text_randVictory;
@@ -183,6 +184,8 @@ class BanditsEvent extends Event
 		{
 			text = text_randLoss;
 			duration = duration_randLoss;
+			cptLog.destroy();
+			captainShip.modHp(-captainShip.getHp());
 		}
 		else
 		{
@@ -193,16 +196,17 @@ class BanditsEvent extends Event
 				case ESCAPE:
 					text = text_escape;
 				case OVER_POWER:
-					cptLog.earnMoney(10);
+					cptLog.earnMoney(1);
 					text = text_overPower;
 				case TIE:
 					text = text_tie;
 				case BOTH_DIE:
 					text = text_mutualDestruction;
+					cptLog.destroy();
 				case DESTROY:
 					if (battleResults.winner == captainShip)
 					{
-						cptLog.earnMoney(10);
+						cptLog.earnMoney(1);
 						text = text_destroy;
 					}
 					else
@@ -213,7 +217,7 @@ class BanditsEvent extends Event
 			}
 			captainShip.modHp(battleResults.hpDelta);
 		}
-		cptLog.add(duration, text, true);
+		cptLog.add(duration, text, captainShip, true);
 	}
 }
 
@@ -229,15 +233,15 @@ class AsteriodEvent extends Event {
 
 	override public function applyEvent(ship: Ship) {
 		if (ship.getSpeed() > this.speedThreshold) {
-			cptLog.add(60*60, "You zip through an asteroid field, avoiding them all");
+			cptLog.add(60*60*1000, "You zip through an asteroid field, avoiding them all", ship);
 			return;
 		}
 		if (ship.hasShield()) {
-			cptLog.add(3*60*60, "You were hit by some asteroids, but your shields easily deflected them.");
+			cptLog.add(3*60*60*1000, "You were hit by some asteroids, but your shields easily deflected them.", ship);
 			return;
 		}
-		cptLog.add(60*60, "You entered an asteroid field, but weren't able to avoid or deflect the debris. Your ship took damage.");
 		ship.modHp(-hpLoss);
+		cptLog.add(60*60*1000, "You entered an asteroid field, but weren't able to avoid or deflect the debris. Your ship took damage.", ship);
 	}
 }
 
@@ -255,11 +259,11 @@ class RaceEvent extends Event {
 
 	override public function applyEvent(ship: Ship) {
 		if (ship.getSpeed() > this.speedThreshold) {
-			cptLog.add(60*60, "You won an illegal space race, earning you money.");
+			cptLog.add(60*60*1000, "You won an illegal space race, earning you money.", ship);
 			cptLog.earnMoney(moneyGain);
 			return;
 		}
-		cptLog.add(60*60, "You got outrun in an illegal race, costing you.");
+		cptLog.add(60*60*1000, "You got outrun in an illegal race, costing you.", ship);
 		cptLog.earnMoney(-moneyLoss);
 	}
 }
@@ -278,12 +282,12 @@ class BlackHoleEvent extends Event {
 
 	override public function applyEvent(ship: Ship) {
 		if (ship.getSpeed() > this.speedThreshold) {
-			cptLog.add(2*60, "You took a shortcut by a black hole, and its gravitational field slingshot you forward. Your ship is now moving faster.");
 			ship.modSpeed(speedGain);
+			cptLog.add(2*60*1000, "You took a shortcut by a black hole, and its gravitational field slingshot you forward. Your ship is now moving faster.", ship);
 			return;
 		}
-		cptLog.add(60*60, "You had a close encounter with a black hole and weren't fast enough to escape.");
 		ship.modHp(-hpLoss);
+		cptLog.add(60*60*1000, "You had a close encounter with a black hole and weren't fast enough to escape.", ship);
 	}
 }
 
@@ -299,12 +303,12 @@ class SolarWindEvent extends Event {
 
 	override public function applyEvent(ship: Ship) {
 		if (ship.hasShield()) {
-			cptLog.add(60*60, "Solar winds pushed you forward, making you move faster.");
 			ship.modSpeed(speedGain);
+			cptLog.add(60*60*1000, "Solar winds pushed you forward, making you move faster.", ship);
 			return;
 		}
-		cptLog.add(60*60, "Your ship was buffeted by solar winds. With nothing to protect the hull's integrity, you took damage.");
 		ship.modHp(-hpLoss);
+		cptLog.add(60*60*1000, "Your ship was buffeted by solar winds. With nothing to protect the hull's integrity, you took damage.", ship);
 	}
 }
 

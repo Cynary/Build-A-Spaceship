@@ -24,12 +24,12 @@ class CaptainLog
 		destroyed = false;
 	}
 
-	public function add(duration:Float, text:String, ?forceWrite:Bool )
+	public function add(duration:Float, text:String, ship:Ship, ?forceWrite:Bool )
 	{
 		if (!destroyed || forceWrite)
 		{
 			dates.push(Date.fromTime(start.getTime()));
-			texts.push(text);
+			texts.push('$text\n\nShip status: HP ${ship.getHp()}, Def ${ship.getDefense()}, Attack ${ship.getAttack()}, Speed ${ship.getSpeed()}, Cargo ${ship.getCargo()}');
 			start = DateTools.delta(start, duration);
 		}
 	}

@@ -21,6 +21,6 @@ class CaptainLogState extends FlxState {
     	function goToBuild() {
     		FlxG.switchState(new BuildState());
     	}
-    	add(new FlxButton(50, 480-50, "continue", goToBuild));
+    	add(new FlxButton(50, 480-30, "continue", goToBuild));
     }
 }

@@ -221,6 +221,7 @@ class AsteriodEvent extends Event {
 	public function new(log:CaptainLog, speedThreshold: Int, hpLoss: Int) {
 		super(log);
 		this.speedThreshold = speedThreshold;
+		this.hpLoss = hpLoss;
 	}
 
 	override public function applyEvent(ship: Ship) {
@@ -233,7 +234,7 @@ class AsteriodEvent extends Event {
 			return;
 		}
 		cptLog.add(60*60, "You entered an asteroid field, but weren't able to avoid or deflect the debris. Your ship took damage.");
-		ship.modHp(hpLoss);
+		ship.modHp(-hpLoss);
 	}
 }
 
@@ -279,11 +280,11 @@ class BlackHoleEvent extends Event {
 			return;
 		}
 		cptLog.add(60*60, "You had a close encounter with a black hole and weren't fast enough to escape.");
-		ship.modHp(hpLoss);
+		ship.modHp(-hpLoss);
 	}
 }
 
-class SolarWind extends Event {
+class SolarWindEvent extends Event {
 	private var speedGain: Int;
 	private var hpLoss: Int;
 
@@ -300,7 +301,7 @@ class SolarWind extends Event {
 			return;
 		}
 		cptLog.add(60*60, "Your ship was buffeted by solar winds. With nothing to protect the hull's integrity, you took damage.");
-		ship.modHp(hpLoss);
+		ship.modHp(-hpLoss);
 	}
 }
 

@@ -357,6 +357,10 @@ class BuildState extends FlxUIState
      */
     override public function update():Void
     {
+        if (player.getMoney() <= 0)
+        {
+            FlxG.switchState(new GameOverState());
+        }
         var comp0 = ship.getComponent(0).getName();
         var comp1 = ship.getComponent(1).getName();
         var comp2 = ship.getComponent(2).getName();

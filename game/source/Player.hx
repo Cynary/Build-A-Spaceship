@@ -5,6 +5,7 @@ import flixel.addons.ui.FlxUIList;
 
 class Player
 {
+	private inline static var REPAIR_COST:Int = 3;
 	private var money:Int;
 	private var ship:Ship;
 	private var carrying:Component = Ship.emptyComponent;
@@ -99,6 +100,7 @@ class Player
 			if (cptLog.isDestroyed())
 			{
 				ship.resetComponents();
+				money -= REPAIR_COST;
 			}
 		}
 		return cptLog;

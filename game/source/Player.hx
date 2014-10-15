@@ -6,14 +6,17 @@ import flixel.addons.ui.FlxUIList;
 class Player
 {
 	private inline static var REPAIR_COST:Int = 3;
+	private inline static var CARGO_VALUE:Int = 3;
 	private var money:Int;
 	private var ship:Ship;
 	private var carrying:Component = Ship.emptyComponent;
+	private var missionNumber:Int;
 
 	public function new(initialMoney:Int, initialShip:Ship)
 	{
 		money = initialMoney;
 		ship = initialShip;
+		missionNumber = 0;
 	}
 
 	public function addShip(ship:Ship)
@@ -77,10 +80,27 @@ class Player
 				new Events.SolarWindEvent(cptLog, /* +speed */ 2, /* -hp */ 6),
 				new Events.BanditsEvent(cptLog,banditShip2),
 				new Events.AsteriodEvent(cptLog, /* speed > */ 2, /* -hp */ 7),
-				new Events.BanditsEvent(cptLog,banditShip3),
+				new Events.BanditsEvent(cptLog,banditShip1),
 				new Events.BlackHoleEvent(cptLog, /* speed > */ 4, /* +speed */ 1, /* -hp */ 10),
 			];
-			for (event in mission)
+			var mission2:Array<Events.Event> = [
+				new Events.AsteriodEvent(cptLog, /* speed > */ 4, /* -hp */ 7),
+				new Events.BlackHoleEvent(cptLog, /* speed > */ 6, /* +speed */ 1, /* -hp */ 10),
+				new Events.RaceEvent( cptLog , 8 , 5 , 5)
+			];
+			var mission3:Array<Events.Event> = [
+				new Events.SolarWindEvent(cptLog, /* +speed */ 2, /* -hp */ 2),
+				new Events.AsteriodEvent(cptLog, /* speed > */ 9, /* -hp */ 7),
+				new Events.BanditsEvent(cptLog,banditShip3),
+				new Events.BlackHoleEvent(cptLog, /* speed > */ 11, /* +speed */ 1, /* -hp */ 10)
+			];
+			var missions:Array< Array<Events.Event> > = [
+				mission,
+				mission2,
+				mission3
+			];
+			var currentMission:Array<Events.Event> =  missions[missionNumber % missions.length];
+			for (event in currentMission)
 			{
 				event.applyEvent(ship);
 				if (ship.getHp() <= 0) {
@@ -100,7 +120,19 @@ class Player
 			if (cptLog.isDestroyed())
 			{
 				ship.resetComponents();
+				cptLog.add(2*60, "You must pay $" + REPAIR_COST + " to get your ship fixed", true );
 				money -= REPAIR_COST;
+			}
+			else
+			{
+				missionNumber++;
+				cptLog.add(2*60, "You finished your mission and move on to the next.");
+
+				money += CARGO_VALUE*ship.getCargo();
+				if (ship.getCargo() > 0)
+				{
+					cptLog.add(2*60, "You earn $" + CARGO_VALUE*ship.getCargo() + " for delivering " + ship.getCargo() + " units of cargo.");
+				}
 			}
 		}
 		return cptLog;

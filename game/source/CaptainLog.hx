@@ -24,9 +24,9 @@ class CaptainLog
 		destroyed = false;
 	}
 
-	public function add(duration:Float, text:String)
+	public function add(duration:Float, text:String, ?forceWrite:Bool )
 	{
-		if (!destroyed)
+		if (!destroyed || forceWrite)
 		{
 			dates.push(Date.fromTime(start.getTime()));
 			texts.push(text);

@@ -357,7 +357,7 @@ class BuildState extends FlxUIState
      */
     override public function update():Void
     {
-        if (player.getMoney() <= 0)
+        if (player.getMoney() < 0)
         {
             FlxG.switchState(new GameOverState());
         }

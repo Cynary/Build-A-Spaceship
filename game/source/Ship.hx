@@ -129,12 +129,12 @@ class Ship
 
 	// Accessors
 	//
-	public function getHp() { return currentHp; }
-	public function getDefense() { return currentDefense; }
-	public function getAttack() { return currentAttack; }
-	public function getSpeed() { return currentSpeed; }
-	public function getCargo() { return currentCargo; }
-	public function getSpots() { return nSpots; }
+	public function getHp():Int  { return currentHp; }
+	public function getDefense():Int  { return currentDefense; }
+	public function getAttack():Int  { return currentAttack; }
+	public function getSpeed():Int  { return currentSpeed; }
+	public function getCargo():Int { return currentCargo; }
+	public function getSpots():Int  { return nSpots; }
 
 	// Current stuff modifiers
 	//

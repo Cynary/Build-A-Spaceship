@@ -30,17 +30,6 @@ private class ComponentText extends FlxText
     public function new(x:Int, y:Int, text:String, w:Int = 32*16)
     {
         super(x, y, w);
-        this.setFormat("assets/fonts/font.ttf", 18, FlxColor.WHITE, "left");
-        this.setBorderStyle(FlxText.BORDER_OUTLINE, FlxColor.BLACK, 1);
-        this.text = text;
-    }
-}
-
-private class CostText extends FlxText
-{
-    public function new(x:Int, y:Int, text:String, w:Int = 32*16)
-    {
-        super(x, y, w);
         this.setFormat("assets/fonts/font.ttf", 20, FlxColor.WHITE, "left");
         this.setBorderStyle(FlxText.BORDER_OUTLINE, FlxColor.BLACK, 1);
         this.text = text;
@@ -92,8 +81,18 @@ class BuildState extends FlxUIState
     private var statSpd:StatText;
     private var statCarg:StatText;
     private var statCur:StatText;
+
+    private var missionCounter:StatText;
 	
 	private var goSoundEffect:FlxSound;
+
+    private var enginel1Text:ComponentText;
+    private var enginel2Text:ComponentText;
+    private var enginel3Text:ComponentText;
+    private var turretl1Text:ComponentText;
+    private var turretl2Text:ComponentText;
+    private var shieldText:ComponentText;
+    private var cargoText:ComponentText;
 
 	private function goFn() {
 		//this.goSoundEffect.play();
@@ -102,6 +101,8 @@ class BuildState extends FlxUIState
         FlxG.switchState(logState);
 	}
     private var btnGo:FlxButton;
+    inline static var componentXOffset = 35;
+    inline static var componentYOffset = 5;
 
 	private function helpButtonPressed():Void {
 		this.helpActive = true;
@@ -117,7 +118,7 @@ class BuildState extends FlxUIState
 		createButtons();
 	}
 	
-    private function createComponentButton(component:Component, x:Int, y:Int, asset:String):FlxButton {
+    private function createButton(component:Component, x:Int, y:Int, asset:String, text:String):FlxButton {
         var button:FlxButton = new FlxButton(x, y, "");
         button.loadGraphic(asset, false, 32, 32, false);
         var state:FlxUIState = this;
@@ -133,11 +134,10 @@ class BuildState extends FlxUIState
             }
         };
         add(button);
-        var costText:FlxText = new CostText(x-32, y+5,
-            '$$${component.getCost()}');
-        add(costText);
-        var componentText:FlxText = new ComponentText(x+33, y+5,
-            component.summary());
+        var componentText:ComponentText = new ComponentText(
+            x+componentXOffset,
+            y+componentYOffset,
+            text);
         add(componentText);
         return button;
     }
@@ -173,19 +173,19 @@ class BuildState extends FlxUIState
         cancelSound = FlxG.sound.load(AssetPaths.cancel__wav);
 		
 		// Engines
-        _btnEnginel1 = createComponentButton(enginel1, 384, 65, "assets/gfx/sprites/enginel1.png");
-        _btnEnginel2 = createComponentButton(enginel2, 384, 97, "assets/gfx/sprites/enginel2.png");
-        _btnEnginel3 = createComponentButton(enginel3, 384, 129,"assets/gfx/sprites/enginel3.png");
+        _btnEnginel1 = createButton(enginel1, 384, 65, "assets/gfx/sprites/enginel1.png", '${enginel1.summary()}');
+        _btnEnginel2 = createButton(enginel2, 384, 97, "assets/gfx/sprites/enginel2.png", '${enginel2.summary()}');
+        _btnEnginel3 = createButton(enginel3, 384, 129,"assets/gfx/sprites/enginel3.png", '${enginel3.summary()}');
 
         // Turrets
-        _btnTurretl1 = createComponentButton(turretl1, 384, 191, "assets/gfx/sprites/turretl1.png");
-        _btnTurretl2 = createComponentButton(turretl2, 384, 223, "assets/gfx/sprites/turretl2.png");
+        _btnTurretl1 = createButton(turretl1, 384, 191, "assets/gfx/sprites/turretl1.png", '${turretl1.summary()}');
+        _btnTurretl2 = createButton(turretl2, 384, 223, "assets/gfx/sprites/turretl2.png", '${turretl2.summary()}');
 
         // Shield
-        _btnShield = createComponentButton(shield, 384, 287, "assets/gfx/sprites/shield.png");
+        _btnShield = createButton(shield, 384, 287, "assets/gfx/sprites/shield.png", '${shield.summary()}');
 
         // Cargo
-        _btnCargo = createComponentButton(cargo, 384, 319, "assets/gfx/sprites/cargo.png");
+        _btnCargo = createButton(cargo, 384, 319, "assets/gfx/sprites/cargo.png", '${cargo.summary()}');
 		
         // Ship slots
         slot0 = createShipSlot(128, 191, 0);
@@ -237,7 +237,7 @@ class BuildState extends FlxUIState
         turretl2 = new Component(0,6,0,0,4,"turretl2");
 
         shield = new Component(1,0,0,0,1,"shield", "shield");
-        cargo = new Component(0,0,0,1,1,"cargo");
+        cargo = new Component(0,0,0,1,1,"cargo", "cargo");
 
         // GUI buttons
         _xml_id = "state_build";
@@ -267,6 +267,9 @@ class BuildState extends FlxUIState
 
         statCur = new StatText(283, 355, 32, '${player.getMoney()}');
         add(statCur);
+
+        missionCounter = new StatText(55, 415, 250, 'Current mission: ${player.getMissionNumber()+1}');
+        add(missionCounter);
 		
 		createButtons();
     }
@@ -293,7 +296,7 @@ class BuildState extends FlxUIState
 
         if (player.getMissionNumber() == 6)
         {
-            FlxG.switchState(new GameOverState('You\'ve completed all your missions. You win with $$${player.getMoney()}!'));
+            FlxG.switchState(new GameOverState("You've completed all your missions. You win with $" +player.getMoney() + "!"));
         }
         var comp0 = ship.getComponent(0).getName();
         var comp1 = ship.getComponent(1).getName();
@@ -315,6 +318,7 @@ class BuildState extends FlxUIState
 		statSpd.text = '${ship.getSpeed()}';
 		statCarg.text = '${ship.getCargo()}';
 		statCur.text = '${player.getMoney()}';
+        missionCounter.text = 'Current mission: ${player.getMissionNumber()+1}';
 
         if (carryingSprite != null) {
             carryingSprite.setPosition(FlxG.mouse.x-16,FlxG.mouse.y-16);

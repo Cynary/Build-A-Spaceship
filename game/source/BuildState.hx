@@ -349,7 +349,6 @@ class BuildState extends FlxUIState
     override public function destroy():Void
     {
         _btnShield = FlxDestroyUtil.destroy(_btnShield);
-		destroyButtons();
         super.destroy();
     }
 

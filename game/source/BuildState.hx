@@ -215,7 +215,7 @@ class BuildState extends FlxUIState
         _btnShield = createButton(shield, 384, 287, "assets/gfx/sprites/shield.png", '${shield.summary()}');
 
         // Cargo
-        _btnCargo = createButton(shield, 384, 319, "assets/gfx/sprites/cargo.png", '${cargo.summary()}');
+        _btnCargo = createButton(cargo, 384, 319, "assets/gfx/sprites/cargo.png", '${cargo.summary()}');
 		
         // Ship slots
         slot0 = createShipSlot(128, 191, 0);

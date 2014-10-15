@@ -73,15 +73,25 @@ class Player
 			var banditShip2 = new Ship(10,0,0,1);
 			var banditShip3 = new Ship(10,4,2,3);
 			var mission:Array<Events.Event> = [
-				new Events.SolarWind(cptLog, /* +speed */ 2, /* -hp */ 2),
+				new Events.SolarWindEvent(cptLog, /* +speed */ 2, /* -hp */ 6),
 				new Events.BanditsEvent(cptLog,banditShip2),
-				new Events.AsteriodEvent(cptLog, /* speed > */ 2, /* -hp */ 2),
+				new Events.AsteriodEvent(cptLog, /* speed > */ 2, /* -hp */ 7),
 				new Events.BanditsEvent(cptLog,banditShip3),
-				new Events.BlackHoleEvent(cptLog, /* speed > */ 4, /* +speed */ 1, /* -hp */ 3),
+				new Events.BlackHoleEvent(cptLog, /* speed > */ 4, /* +speed */ 1, /* -hp */ 10),
 			];
 			for (event in mission)
 			{
 				event.applyEvent(ship);
+				if (ship.getHp() <= 0) {
+					cptLog.add(0.0, "Your ship has no health left and disintegrates into space debris.");
+					cptLog.destroy();
+					break;
+				}
+				if (ship.getSpeed() < 0) {
+					cptLog.add(0.0, "Looks like your ship's engines gave out. The ship drifts until the nearest star, then stops drifting.");
+					cptLog.destroy();
+					break;
+				}
 			}
 			money += cptLog.getMoney();
 

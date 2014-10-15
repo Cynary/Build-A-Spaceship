@@ -113,6 +113,8 @@ class BuildState extends FlxUIState
     private var slot0:FlxButton;
     private var slot1:FlxButton;
     private var slot2:FlxButton;
+    private var slot3:FlxButton;
+    private var slot4:FlxButton;
 
     private var ship:Ship;
     private var player:Player;
@@ -281,6 +283,15 @@ class BuildState extends FlxUIState
         slot2 = new FlxButton(192, 191, "", new ShipCaller(player, 2).clickFn);
         slot2.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
         add(slot2);
+		
+        slot3 = new FlxButton(192, 159, "", new ShipCaller(player, 3).clickFn);
+        slot3.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
+        add(slot3);
+
+        slot4 = new FlxButton(192, 223, "", new ShipCaller(player, 4).clickFn);
+        slot4.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
+        add(slot4);
+
 
 
         // Go
@@ -311,9 +322,13 @@ class BuildState extends FlxUIState
         var comp0 = ship.getComponent(0).getName();
         var comp1 = ship.getComponent(1).getName();
         var comp2 = ship.getComponent(2).getName();
+        var comp3 = ship.getComponent(3).getName();
+        var comp4 = ship.getComponent(4).getName();
         slot0.loadGraphic('assets/gfx/sprites/${comp0 != "" ? comp0 : "empty"}.png', false, 32, 32, false);
         slot1.loadGraphic('assets/gfx/sprites/${comp1 != "" ? comp1 : "empty"}.png', false, 32, 32, false);
         slot2.loadGraphic('assets/gfx/sprites/${comp2 != "" ? comp2 : "empty"}.png', false, 32, 32, false);
+        slot3.loadGraphic('assets/gfx/sprites/${comp3 != "" ? comp3 : "empty"}.png', false, 32, 32, false);
+        slot4.loadGraphic('assets/gfx/sprites/${comp4 != "" ? comp4 : "empty"}.png', false, 32, 32, false);
 
 		statHP.text = '${ship.getHp()}';
 		statAtk.text = '${ship.getAttack()}';

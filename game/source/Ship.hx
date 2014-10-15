@@ -30,7 +30,7 @@ class Ship
 
 	// Base stats here
 	//
-	public function new(hp:Int = 10, defense:Int = 2, attack:Int = 0, speed:Int = 0, cargo:Int = 0, nSpots:Int = 3)
+	public function new(hp:Int = 10, defense:Int = 2, attack:Int = 0, speed:Int = 0, cargo:Int = 0, nSpots:Int = 5)
 	{
 		this.nSpots = nSpots;
 		components = [for (i in 0...nSpots) emptyComponent];

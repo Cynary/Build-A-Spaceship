@@ -32,12 +32,12 @@ private class PickupCaller
         if (player.getCarrying() == component)
         {
             player.drop();
-            trace('dropped ${component.getName()}');
+            Deb.trace('dropped ${component.getName()}');
         }
         else
         {
             player.pickup(component);
-            trace('picked up ${component.getName()}');
+            Deb.trace('picked up ${component.getName()}');
         }
     }
 }
@@ -61,12 +61,12 @@ private class ShipCaller
         var component:Component = player.getCarrying();
 		var previousComponent:Component = player.getShip().getComponent(spot);
 		player.sellComponent(spot);
-		trace('Sold component ${previousComponent.getName()} in spot $spot');
+		Deb.trace('Sold component ${previousComponent.getName()} in spot $spot');
         if (component != Ship.emptyComponent)
         {
 			this.click.play();
             player.buyComponent(spot);
-            trace('Bought component ${component.getName()} in spot $spot');
+            Deb.trace('Bought component ${component.getName()} in spot $spot');
         }
 		else
 		{
@@ -102,6 +102,10 @@ private class ComponentText extends FlxText
  */
 class BuildState extends FlxUIState
 {
+    // Player manager/finances/ship/...
+    static var ship = new Ship();
+    static var player = new Player(10 /*initialMoney*/, ship);
+
     private var _btnShield:FlxButton;
     private var _btnCargo:FlxButton;
     private var _btnTurretl1:FlxButton;
@@ -116,8 +120,6 @@ class BuildState extends FlxUIState
     private var slot3:FlxButton;
     private var slot4:FlxButton;
 
-    private var ship:Ship;
-    private var player:Player;
     private var enginel1:Component;
     private var enginel2:Component;
     private var enginel3:Component;
@@ -145,8 +147,9 @@ class BuildState extends FlxUIState
 
 	private function goFn() {
 		this.goSoundEffect.play();
-		var sprite = player.goMission();
-		add(sprite);
+		var cptLog = player.goMission();
+        var logState = new CaptainLogState(cptLog);
+        FlxG.switchState(logState);
 	}
     private var btnGo:FlxButton;
     inline static var componentXOffset = 35;
@@ -157,10 +160,6 @@ class BuildState extends FlxUIState
      */
     override public function create():Void
     {
-        // Player manager/finances/ship/...
-        ship = new Ship();
-        player = new Player(10 /*initialMoney*/, ship);
-		
 		this.goSoundEffect = FlxG.sound.load(AssetPaths.go__wav);
 
         // Components

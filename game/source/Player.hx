@@ -60,7 +60,7 @@ class Player
 		}
 	}
 
-	public function goMission():FlxUIList
+	public function goMission():CaptainLog
 	{
 		var cptLog = new CaptainLog(Date.now());
 		if (ship.getSpeed() <= 0)
@@ -89,6 +89,6 @@ class Player
 				ship.resetComponents();
 			}
 		}
-		return cptLog.createSprite(640, 480);
+		return cptLog;
 	}
 }

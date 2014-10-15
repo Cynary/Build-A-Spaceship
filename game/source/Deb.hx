@@ -7,7 +7,7 @@ import haxe.macro.Context;
 
 class Deb
 {
-	static inline private var debug = true;
+	static inline private var debug = false;
 
 	macro public static function assert(e:Expr)
 	{
@@ -27,5 +27,11 @@ class Deb
 	public static function p(i)
 	{
 		return true;
+	}
+
+	public static function trace(s:String) {
+		if (debug) {
+			trace(s);
+		}
 	}
 }

@@ -124,8 +124,11 @@ class Ship
 		var moneyReturned:Int = 0;
 		for (spot in 0...nSpots)
 		{
-			var component = removeComponent(spot);
-			moneyReturned += component.getCost();
+			if (!emptySpot(spot))
+			{
+				var component = removeComponent(spot);
+				moneyReturned += component.getCost();
+			}
 		}
 		return moneyReturned;
 	}

@@ -139,14 +139,14 @@ class BanditsEvent extends Event
 	private var p_randVictory:Float;
 	private var p_randLoss:Float;
 
-	private var text_overPower:String = "As we are cruising along space, we come across a bandit ship. They prepare their weapons to fire, and we engage as well. They feel the impact of our weapons, and watch terrified as their attacks bounce off our shields without causing a scratch. They run away in terror, but they are not fast enough to escape us, and we completely over power them, and take their money.";
+	private var text_overPower:String = "As we are cruising along space, we come across a bandit ship. They prepare their weapons to fire, and we engage as well. They feel the impact of our weapons, and watch terrified as their attacks bounce off our shields without causing a scratch. They run away in terror, but they are not fast enough to escape us, and we completely over power them, and take 1 money from them.";
 	private var text_escape:String = "As we are cruising along space, we come across a bandit ship. Some shots are exchanged, but we decide to escape, since our ship is faster than theirs.";
 	private var text_tie:String = "As we are cruising along space, we come across a bandit ship. They prepare their weapons to fire, and we engage as well. We watch as our attacks bounce off each other's shields. Our ships are equally matched. I tip my hat to the opposing captain, and we part ways.";
 	private var text_mutualDestruction:String = "As we are cruising along space, we come across a bandit ship. We exchange shots, and our ships are equally matched. Both the ships get destroyed in the battle. I write this as the air is sucked from my cabin, it has been a pleasure to serve you, sir.";
 	private var text_destroy:String = "As we are cruising along space, we come across a bandit ship. We exchange shots, and while we take some damage, we eventually destroy the bandit ship, and take their money.";
 	private var text_destroyed:String = "As we are cruising along space, we come across a bandit ship. We exchange shots, but our shields, and hull don't hold together, and we are not able to destroy the ship before ours gets destroyed. I write this as the air is sucked from my cabin, it has been a pleasure to serve you, sir.";
 
-	private var text_randVictory:String = "As we are cruising along space, we come across a bandit ship. An angel comes down from heaven, and destroys them. We are not sure what happened, some people in the crew think something got in the food, or in the air vents. All we know is that we won, and took the bandits's money for evidence.";
+	private var text_randVictory:String = "As we are cruising along space, we come across a bandit ship. An angel comes down from heaven, and destroys them. We are not sure what happened, some people in the crew think something got in the food, or in the air vents. All we know is that we won, and took 1 money from the bandits.";
 	private var text_randLoss:String = "As we are cruising along space, we come across a bandit ship. A demon comes up from hell, and destroys our ship. We are not sure what happened, some people in the crew think something got in the food, or in the air vents. All we know is that our ship is currently falling apart. I write this as the air is sucked from my cabin, it has been a pleasure to serve you, sir.";
 	private var duration_randVictory:Int = 1*BattleResults.turnDuration;
 	private var duration_randLoss:Int = 1*BattleResults.turnDuration;
@@ -241,7 +241,7 @@ class AsteriodEvent extends Event {
 			return;
 		}
 		ship.modHp(-hpLoss);
-		cptLog.add(60*60*1000, "You entered an asteroid field, but weren't able to avoid or deflect the debris. Your ship took damage.", ship);
+		cptLog.add(60*60*1000, "You entered an asteroid field, but weren't able to avoid or deflect the debris. Your ship took " + hpLoss + " damage.", ship);
 	}
 }
 
@@ -259,11 +259,11 @@ class RaceEvent extends Event {
 
 	override public function applyEvent(ship: Ship) {
 		if (ship.getSpeed() > this.speedThreshold) {
-			cptLog.add(60*60*1000, "You won an illegal space race, earning you money.", ship);
+			cptLog.add(60*60*1000, "You were challenged to an illegal space race. With your fast ship, you won, earning you " + moneyGain + " money.", ship);
 			cptLog.earnMoney(moneyGain);
 			return;
 		}
-		cptLog.add(60*60*1000, "You got outrun in an illegal race, costing you.", ship);
+		cptLog.add(60*60*1000, "You were challenged to an illegal space race. However, you were left in the dust, and lost " + moneyLoss + " money", ship);
 		cptLog.earnMoney(-moneyLoss);
 	}
 }
@@ -287,7 +287,7 @@ class BlackHoleEvent extends Event {
 			return;
 		}
 		ship.modHp(-hpLoss);
-		cptLog.add(60*60*1000, "You had a close encounter with a black hole and weren't fast enough to escape.", ship);
+		cptLog.add(60*60*1000, "You had a close encounter with a black hole and weren't fast enough to escape. You lost " + hpLoss + " health", ship);
 	}
 }
 
@@ -308,7 +308,7 @@ class SolarWindEvent extends Event {
 			return;
 		}
 		ship.modHp(-hpLoss);
-		cptLog.add(60*60*1000, "Your ship was buffeted by solar winds. With nothing to protect the hull's integrity, you took damage.", ship);
+		cptLog.add(60*60*1000, "Your ship was buffeted by solar winds. With nothing to protect the hull's integrity, you took " + hpLoss + " damage.", ship);
 	}
 }
 

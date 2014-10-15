@@ -14,38 +14,6 @@ import flixel.plugin.MouseEventManager;
 
 using flixel.util.FlxSpriteUtil;
 
-private class ShipCaller
-{
-    private var player:Player;
-    private var spot:Int;
-	private var cancel:FlxSound;
-	private var click:FlxSound;
-    public function new(player:Player, spot:Int)
-    {
-        this.player = player;
-        this.spot = spot;
-		this.cancel = FlxG.sound.load(AssetPaths.cancel__wav);
-    }
-
-    public function clickFn()
-    {
-        var component:Component = player.getCarrying();
-		var previousComponent:Component = player.getShip().getComponent(spot);
-		player.sellComponent(spot);
-		Deb.trace('Sold component ${previousComponent.getName()} in spot $spot');
-        if (component != Ship.emptyComponent)
-        {
-			this.click.play();
-            player.buyComponent(spot);
-            Deb.trace('Bought component ${component.getName()} in spot $spot');
-        }
-		else
-		{
-			this.cancel.play();
-		}
-    }
-}
-
 private class StatText extends FlxText
 {
     public function new(x:Int, y:Int, w:Int, text:String)

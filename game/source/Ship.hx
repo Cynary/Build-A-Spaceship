@@ -49,6 +49,15 @@ class Ship
         return components[spot];
     }
 
+    public function hasShield():Bool {
+    	for (component in this.components) {
+    		if (component.getName() == "shield") {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+
 	public function addComponent(component:Component, spot:Int)
 	{
 		// Is this a valid spot?

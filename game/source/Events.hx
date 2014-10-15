@@ -213,3 +213,99 @@ class BanditsEvent extends Event
 		cptLog.add(duration, text);
 	}
 }
+
+class AsteriodEvent extends Event {
+	private var speedThreshold: Int;
+	private var hpLoss: Int;
+
+	public function new(log:CaptainLog, speedThreshold: Int, hpLoss: Int) {
+		super(log);
+		this.speedThreshold = speedThreshold;
+	}
+
+	override public function applyEvent(ship: Ship) {
+		if (ship.getSpeed() > this.speedThreshold) {
+			cptLog.add(60*60, "You zip through an asteroid field, avoiding them all");
+			return;
+		}
+		if (ship.hasShield()) {
+			cptLog.add(3*60*60, "You were hit by some asteroids, but your shields easily deflected them.");
+			return;
+		}
+		cptLog.add(60*60, "You entered an asteroid field, but weren't able to avoid or deflect the debris. Your ship took damage.");
+		ship.modHp(hpLoss);
+	}
+}
+
+class RaceEvent extends Event {
+	private var speedThreshold: Int;
+	private var moneyGain: Int;
+	private var moneyLoss: Int;
+
+	public function new(log:CaptainLog, speedThreshold: Int, moneyGain: Int, moneyLoss: Int) {
+		super(log);
+		this.speedThreshold = speedThreshold;
+		this.moneyGain = moneyGain;
+		this.moneyLoss = moneyLoss;
+	}
+
+	override public function applyEvent(ship: Ship) {
+		if (ship.getSpeed() > this.speedThreshold) {
+			cptLog.add(60*60, "You won an illegal space race, earning you money.");
+			cptLog.earnMoney(moneyGain);
+			return;
+		}
+		cptLog.add(60*60, "You got outrun in an illegal race, costing you.");
+		cptLog.earnMoney(-moneyLoss);
+	}
+}
+
+class BlackHoleEvent extends Event {
+	private var speedThreshold: Int;
+	private var speedGain: Int;
+	private var hpLoss: Int;
+
+	public function new(log:CaptainLog, speedThreshold: Int, speedGain: Int, hpLoss: Int) {
+		super(log);
+		this.speedThreshold = speedThreshold;
+		this.speedGain = speedGain;
+		this.hpLoss = hpLoss;
+	}
+
+	override public function applyEvent(ship: Ship) {
+		if (ship.getSpeed() > this.speedThreshold) {
+			cptLog.add(2*60, "You took a shortcut by a black hole, and its gravitational field slingshot you forward. Your ship is now moving faster.");
+			ship.modSpeed(speedGain);
+			return;
+		}
+		cptLog.add(60*60, "You had a close encounter with a black hole and weren't fast enough to escape.");
+		ship.modHp(hpLoss);
+	}
+}
+
+class SolarWind extends Event {
+	private var speedGain: Int;
+	private var hpLoss: Int;
+
+	public function new(log:CaptainLog, speedGain: Int, hpLoss: Int) {
+		super(log);
+		this.speedGain = speedGain;
+		this.hpLoss = hpLoss;
+	}
+
+	override public function applyEvent(ship: Ship) {
+		if (ship.hasShield()) {
+			cptLog.add(60*60, "Solar winds pushed you forward, making you move faster.");
+			ship.modSpeed(speedGain);
+			return;
+		}
+		cptLog.add(60*60, "Your ship was buffeted by solar winds. With nothing to protect the hull's integrity, you took damage.");
+		ship.modHp(hpLoss);
+	}
+}
+
+
+
+
+
+

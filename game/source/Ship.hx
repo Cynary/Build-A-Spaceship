@@ -83,7 +83,9 @@ class Ship
 		// Is this a valid spot?
 		//
 		Deb.assert(spot < nSpots);
-		Deb.assert(!emptySpot(spot));
+		if (emptySpot(spot)) {
+			return null;
+		}
 
 		// Undo the modifiers, and remove the component;
 		//
@@ -124,20 +126,20 @@ class Ship
 		var moneyReturned:Int = 0;
 		for (spot in 0...nSpots)
 		{
-			moneyReturned += components[spot].getCost();
-			removeComponent(spot);
+			var component = removeComponent(spot);
+			moneyReturned += component.getCost();
 		}
 		return moneyReturned;
 	}
 
 	// Accessors
 	//
-	public function getHp():Int  { return currentHp; }
-	public function getDefense():Int  { return currentDefense; }
-	public function getAttack():Int  { return currentAttack; }
-	public function getSpeed():Int  { return currentSpeed; }
-	public function getCargo():Int { return currentCargo; }
-	public function getSpots():Int  { return nSpots; }
+	public function getHp() { return currentHp; }
+	public function getDefense() { return currentDefense; }
+	public function getAttack() { return currentAttack; }
+	public function getSpeed() { return currentSpeed; }
+	public function getCargo() { return currentCargo; }
+	public function getSpots() { return nSpots; }
 
 	// Current stuff modifiers
 	//

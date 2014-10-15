@@ -174,7 +174,7 @@ class BanditsEvent extends Event
 		var duration:Int;
 		var text:String = "";
 		var choice:Float = Math.random();
-		trace(choice);
+		
 		if (choice <= p_randVictory)
 		{
 			text = text_randVictory;

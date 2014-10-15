@@ -36,19 +36,19 @@ class Component
 		if (v > 0) {
 			s = "+";
 		}
-		s += v + code + " ";
+		s += '$v $code ';
 		return s;
 	}
 
 	public function summary():String {
-		var s:String = '$$${this.cost} ';
+		var s:String = '';
 		if (shortDisplay != "") {
 			s += '${this.shortDisplay} ';
 		}
-		s += statSummary(defense, "D");
-		s += statSummary(attack, "A");
-		s += statSummary(speed, "S");
-		s += statSummary(cargo, "C");
+		s += statSummary(defense, "Def");
+		s += statSummary(attack, "Atk");
+		s += statSummary(speed, "Spd");
+		s += statSummary(cargo, "Cargo");
 		return s;
 	}
 }

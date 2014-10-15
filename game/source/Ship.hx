@@ -119,12 +119,15 @@ class Ship
 
 	public function emptySpot(spot:Int):Bool { return components[spot] == emptyComponent; }
 
-	public function resetComponents()
+	public function resetComponents():Int
 	{
+		var moneyReturned:Int = 0;
 		for (spot in 0...nSpots)
 		{
+			moneyReturned += components[spot].getCost();
 			removeComponent(spot);
 		}
+		return moneyReturned;
 	}
 
 	// Accessors

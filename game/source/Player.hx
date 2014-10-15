@@ -126,7 +126,8 @@ class Player
 			ship.reset();
 			if (cptLog.isDestroyed())
 			{
-				ship.resetComponents();
+				var moneyReturned = ship.resetComponents();
+				money += moneyReturned;
 				cptLog.add(2*60, "You must pay $" + REPAIR_COST + " to get your ship fixed", true );
 				money -= REPAIR_COST;
 			}

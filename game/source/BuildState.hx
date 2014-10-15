@@ -119,6 +119,10 @@ class BuildState extends FlxUIState
     private var slot2:FlxButton;
     private var slot3:FlxButton;
     private var slot4:FlxButton;
+	
+	private var helpButton:FlxButton;
+	private var returnFromHelp:FlxButton;
+	private var helpActive:Bool;
 
     private var enginel1:Component;
     private var enginel2:Component;
@@ -155,29 +159,26 @@ class BuildState extends FlxUIState
     inline static var componentXOffset = 35;
     inline static var componentYOffset = 5;
 
-    /**
-     * Function that is called up when to state is created to set it up.
-     */
-    override public function create():Void
-    {
-		this.goSoundEffect = FlxG.sound.load(AssetPaths.go__wav);
-
-        // Components
-        enginel1 = new Component(-1,0,2,0,1,"enginel1");
-        enginel2 = new Component(-1,0,5,0,3,"enginel2");
-        enginel3 = new Component(-3,0,10,0,8,"enginel3");
-
-        turretl1 = new Component(0,3,0,0,1,"turretl1");
-        turretl2 = new Component(0,6,0,0,4,"turretl2");
-
-        shield = new Component(1,0,0,0,1,"shield", "shield");
-        cargo = new Component(0,0,0,1,1,"cargo", "cargo");
-
-        // GUI buttons
-        _xml_id = "state_build";
-
-
-        // Engines
+	private function helpButtonPressed():Void {
+		this.helpActive = true;
+		destroyButtons();
+		this.returnFromHelp = new FlxButton(0, 0, "", leaveHelp);
+		this.returnFromHelp.loadGraphic("assets/gfx/sprites/help.png", false, 640, 480, false);
+		add(this.returnFromHelp);
+	}
+	
+	private function leaveHelp():Void {
+		this.helpActive = false;
+		this.returnFromHelp.destroy();
+		createButtons();
+	}
+	
+	private function createButtons():Void {
+		this.helpButton = new FlxButton(352, 416, "", helpButtonPressed);
+		this.helpButton.loadGraphic("assets/gfx/sprites/help_button.png", false, 96, 32, false);
+		add(this.helpButton);
+		
+		// Engines
         _btnEnginel1 = new FlxButton(384, 65, "", new PickupCaller(player, enginel1).clickFn);
         _btnEnginel1.loadGraphic("assets/gfx/sprites/enginel1.png", false, 32, 32, false);
         add(_btnEnginel1);
@@ -243,34 +244,8 @@ class BuildState extends FlxUIState
             319+componentYOffset,
             '${cargo.summary()}');
         add(cargoText);
-
-        // Extra canvas things
-        var canvas = new FlxSprite();
-        canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT, true);
-        add(canvas);
-
-
-        // Stats
-        statHP = new StatText(40, 355, 32, '${ship.getHp()}');
-        add(statHP);
-
-        statDef = new StatText(90, 355, 32, '${ship.getAttack()}');
-        add(statDef);
-
-        statAtk = new StatText(140, 355, 32, '${ship.getDefense()}');
-        add(statAtk);
-
-        statSpd = new StatText(190, 355, 32, '${ship.getSpeed()}');
-        add(statSpd);
-
-        statCarg = new StatText(240, 355, 32, '${ship.getCargo()}');
-        add(statCarg);
-
-        statCur = new StatText(283, 355, 32, '${player.getMoney()}');
-        add(statCur);
-
-
-        // Ship slots
+		
+		        // Ship slots
         slot0 = new FlxButton(128, 191, "", new ShipCaller(player, 0).clickFn);
         slot0.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
         add(slot0);
@@ -291,14 +266,79 @@ class BuildState extends FlxUIState
         slot4.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
         add(slot4);
 
-
-
         // Go
         btnGo = new FlxButton(480, 415, "", goFn);
         btnGo.height = 32;
         btnGo.width = 128;
         btnGo.loadGraphic("assets/gfx/sprites/go.png");
         add(btnGo);
+	}
+	
+	private function destroyButtons():Void {
+		btnGo.destroy();
+		helpButton.destroy();
+		slot0.destroy();
+		slot1.destroy();
+		slot2.destroy();
+		slot3.destroy();
+		slot4.destroy();
+		
+		_btnShield.destroy();
+		_btnCargo.destroy();
+		_btnTurretl1.destroy();
+		_btnTurretl2.destroy();
+		_btnEnginel1.destroy();
+		_btnEnginel2.destroy();
+		_btnEnginel3.destroy();
+	}
+	
+    /**
+     * Function that is called up when to state is created to set it up.
+     */
+    override public function create():Void
+    {
+		this.goSoundEffect = FlxG.sound.load(AssetPaths.go__wav);
+		this.helpActive = false;
+		
+        // Components
+        enginel1 = new Component(-1,0,2,0,1,"enginel1");
+        enginel2 = new Component(-1,0,5,0,3,"enginel2");
+        enginel3 = new Component(-3,0,10,0,8,"enginel3");
+
+        turretl1 = new Component(0,3,0,0,1,"turretl1");
+        turretl2 = new Component(0,6,0,0,4,"turretl2");
+
+        shield = new Component(1,0,0,0,1,"shield", "shield");
+        cargo = new Component(0,0,0,1,1,"cargo", "cargo");
+
+        // GUI buttons
+        _xml_id = "state_build";
+
+		createButtons();
+		
+        // Extra canvas things
+        var canvas = new FlxSprite();
+        canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT, true);
+        add(canvas);
+
+        // Stats
+        statHP = new StatText(40, 355, 32, '${ship.getHp()}');
+        add(statHP);
+
+        statDef = new StatText(90, 355, 32, '${ship.getAttack()}');
+        add(statDef);
+
+        statAtk = new StatText(140, 355, 32, '${ship.getDefense()}');
+        add(statAtk);
+
+        statSpd = new StatText(190, 355, 32, '${ship.getSpeed()}');
+        add(statSpd);
+
+        statCarg = new StatText(240, 355, 32, '${ship.getCargo()}');
+        add(statCarg);
+
+        statCur = new StatText(283, 355, 32, '${player.getMoney()}');
+        add(statCur);
 
         super.create();
     }
@@ -310,6 +350,7 @@ class BuildState extends FlxUIState
     override public function destroy():Void
     {
         _btnShield = FlxDestroyUtil.destroy(_btnShield);
+		destroyButtons();
         super.destroy();
     }
 
@@ -323,11 +364,14 @@ class BuildState extends FlxUIState
         var comp2 = ship.getComponent(2).getName();
         var comp3 = ship.getComponent(3).getName();
         var comp4 = ship.getComponent(4).getName();
-        slot0.loadGraphic('assets/gfx/sprites/${comp0 != "" ? comp0 : "empty"}.png', false, 32, 32, false);
-        slot1.loadGraphic('assets/gfx/sprites/${comp1 != "" ? comp1 : "empty"}.png', false, 32, 32, false);
-        slot2.loadGraphic('assets/gfx/sprites/${comp2 != "" ? comp2 : "empty"}.png', false, 32, 32, false);
-        slot3.loadGraphic('assets/gfx/sprites/${comp3 != "" ? comp3 : "empty"}.png', false, 32, 32, false);
-        slot4.loadGraphic('assets/gfx/sprites/${comp4 != "" ? comp4 : "empty"}.png', false, 32, 32, false);
+		if (this.helpActive == false)
+		{
+			slot0.loadGraphic('assets/gfx/sprites/${comp0 != "" ? comp0 : "empty"}.png', false, 32, 32, false);
+			slot1.loadGraphic('assets/gfx/sprites/${comp1 != "" ? comp1 : "empty"}.png', false, 32, 32, false);
+			slot2.loadGraphic('assets/gfx/sprites/${comp2 != "" ? comp2 : "empty"}.png', false, 32, 32, false);
+			slot3.loadGraphic('assets/gfx/sprites/${comp3 != "" ? comp3 : "empty"}.png', false, 32, 32, false);
+			slot4.loadGraphic('assets/gfx/sprites/${comp4 != "" ? comp4 : "empty"}.png', false, 32, 32, false);
+		}
 
 		statHP.text = '${ship.getHp()}';
 		statAtk.text = '${ship.getAttack()}';

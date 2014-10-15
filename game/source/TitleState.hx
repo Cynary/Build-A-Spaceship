@@ -19,8 +19,15 @@ class TitleState extends FlxState
 	 */
 	override public function create():Void
 	{
-		this.titleButton = 
+		this.titleButton = new FlxButton(0, 0, "", startGame);
+		this.titleButton.loadGraphic("assets/gfx/sprites/title.png", false, 640, 480, false);
+		add(this.titleButton);
 		super.create();
+	}
+	
+	private function startGame():Void
+	{
+		FlxG.switchState(new BuildState());
 	}
 	
 	/**
@@ -29,6 +36,7 @@ class TitleState extends FlxState
 	 */
 	override public function destroy():Void
 	{
+		this.titleButton.destroy();
 		super.destroy();
 	}
 

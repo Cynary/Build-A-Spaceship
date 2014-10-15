@@ -10,36 +10,9 @@ import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxColor;
 import flixel.FlxG;
 import flixel.system.FlxSound;
+import flixel.plugin.MouseEventManager;
 
 using flixel.util.FlxSpriteUtil;
-
-private class PickupCaller
-{
-    private var component:Component;
-    private var player:Player;
-	private var click:FlxSound;
-    public function new(player:Player, component:Component)
-    {
-        this.component = component;
-        this.player = player;
-		this.click = FlxG.sound.load(AssetPaths.click__wav);
-    }
-
-    public function clickFn()
-    {
-		this.click.play();
-        if (player.getCarrying() == component)
-        {
-            player.drop();
-            Deb.trace('dropped ${component.getName()}');
-        }
-        else
-        {
-            player.pickup(component);
-            Deb.trace('picked up ${component.getName()}');
-        }
-    }
-}
 
 private class ShipCaller
 {
@@ -52,7 +25,6 @@ private class ShipCaller
         this.player = player;
         this.spot = spot;
 		this.cancel = FlxG.sound.load(AssetPaths.cancel__wav);
-		this.click = FlxG.sound.load(AssetPaths.click__wav);
     }
 
     public function clickFn()
@@ -113,6 +85,10 @@ class BuildState extends FlxUIState
     private var _btnEnginel2:FlxButton;
     private var _btnEnginel3:FlxButton;
 
+    private var carryingSprite:FlxSprite;
+    private var pickupSound:FlxSound;
+    private var cancelSound:FlxSound;
+
     private var slot0:FlxButton;
     private var slot1:FlxButton;
     private var slot2:FlxButton;
@@ -172,98 +148,81 @@ class BuildState extends FlxUIState
 		createButtons();
 	}
 	
+    private function createButton(component:Component, x:Int, y:Int, asset:String, text:String):FlxButton {
+        var button:FlxButton = new FlxButton(x, y, "");
+        button.loadGraphic(asset, false, 32, 32, false);
+        var state:FlxUIState = this;
+        button.onDown.callback = function() {
+            // Picking up happens here
+            if (carryingSprite == null) {
+                pickupSound.play();
+                player.pickup(component);
+                carryingSprite = new FlxSprite(FlxG.mouse.x - 16, FlxG.mouse.y - 16);
+                carryingSprite.loadGraphic(asset, false, 32, 32, false);
+                state.add(carryingSprite);
+                player.pickup(component);
+            }
+        };
+        add(button);
+        var componentText:ComponentText = new ComponentText(
+            x+componentXOffset,
+            y+componentYOffset,
+            text);
+        add(componentText);
+        return button;
+    }
+
+    private function createShipSlot(x:Int, y:Int, spot:Int):FlxButton {
+        var slot:FlxButton = new FlxButton(x, y, "");
+        slot.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
+        var state:BuildState = this;
+        slot.onDown.callback = function() {
+            if (carryingSprite == null) {
+                state.cancelSound.play();
+                player.sellComponent(spot);
+            }
+        };
+        slot.onUp.callback = function() {
+            if (carryingSprite != null) {
+                state.pickupSound.play();
+                player.sellComponent(spot);
+                player.buyComponent(spot);
+            }
+        };
+        add(slot);
+        return slot;
+    }
+
 	private function createButtons():Void {
 		this.helpButton = new FlxButton(352, 416, "", helpButtonPressed);
 		this.helpButton.loadGraphic("assets/gfx/sprites/help_button.png", false, 96, 32, false);
 		add(this.helpButton);
+
+        // Load sound
+        pickupSound = FlxG.sound.load(AssetPaths.click__wav);
+        cancelSound = FlxG.sound.load(AssetPaths.cancel__wav);
 		
 		// Engines
-        _btnEnginel1 = new FlxButton(384, 65, "", new PickupCaller(player, enginel1).clickFn);
-        _btnEnginel1.loadGraphic("assets/gfx/sprites/enginel1.png", false, 32, 32, false);
-        add(_btnEnginel1);
-        enginel1Text = new ComponentText(
-            384+componentXOffset,
-            65+componentYOffset,
-            '${enginel1.summary()}');
-        add(enginel1Text);
-
-        _btnEnginel2 = new FlxButton(384, 97, "", new PickupCaller(player, enginel2).clickFn);
-        _btnEnginel2.loadGraphic("assets/gfx/sprites/enginel2.png", false, 32, 32, false);
-        add(_btnEnginel2);
-        enginel2Text = new ComponentText(
-            384+componentXOffset,
-            97+componentYOffset,
-            '${enginel2.summary()}');
-        add(enginel2Text);
-
-        _btnEnginel3 = new FlxButton(384, 129, "", new PickupCaller(player, enginel3).clickFn);
-        _btnEnginel3.loadGraphic("assets/gfx/sprites/enginel3.png", false, 32, 32, false);
-        add(_btnEnginel3);
-        enginel3Text = new ComponentText(
-            384+componentXOffset, 
-            129+componentYOffset,
-            '${enginel3.summary()}');
-        add(enginel3Text);
+        _btnEnginel1 = createButton(enginel1, 384, 65, "assets/gfx/sprites/enginel1.png", '${enginel1.summary()}');
+        _btnEnginel2 = createButton(enginel2, 384, 97, "assets/gfx/sprites/enginel2.png", '${enginel2.summary()}');
+        _btnEnginel3 = createButton(enginel3, 384, 129,"assets/gfx/sprites/enginel3.png", '${enginel3.summary()}');
 
         // Turrets
-        _btnTurretl1 = new FlxButton(384, 191, "", new PickupCaller(player, turretl1).clickFn);
-        _btnTurretl1.loadGraphic("assets/gfx/sprites/turretl1.png", false, 32, 32, false);
-        add(_btnTurretl1);
-        turretl1Text = new ComponentText(
-            384+componentXOffset, 
-            191+componentYOffset,
-            '${turretl1.summary()}');
-        add(turretl1Text);
-
-        _btnTurretl2 = new FlxButton(384, 223, "", new PickupCaller(player, turretl2).clickFn);
-        _btnTurretl2.loadGraphic("assets/gfx/sprites/turretl2.png", false, 32, 32, false);
-        add(_btnTurretl2);
-        turretl2Text = new ComponentText(
-            384+componentXOffset, 
-            223+componentYOffset,
-            '${turretl2.summary()}');
-        add(turretl2Text);
+        _btnTurretl1 = createButton(turretl1, 384, 191, "assets/gfx/sprites/turretl1.png", '${turretl1.summary()}');
+        _btnTurretl2 = createButton(turretl2, 384, 223, "assets/gfx/sprites/turretl2.png", '${turretl2.summary()}');
 
         // Shield
-        _btnShield = new FlxButton(384, 287, "", new PickupCaller(player, shield).clickFn);
-        _btnShield.loadGraphic("assets/gfx/sprites/shield.png", false, 32, 32, false);
-        add(_btnShield);
-        shieldText = new ComponentText(
-            384+componentXOffset, 
-            287+componentYOffset,
-            '${shield.summary()}');
-        add(shieldText);
+        _btnShield = createButton(shield, 384, 287, "assets/gfx/sprites/shield.png", '${shield.summary()}');
 
         // Cargo
-        _btnCargo = new FlxButton(384, 319, "", new PickupCaller(player, cargo).clickFn);
-        _btnCargo.loadGraphic("assets/gfx/sprites/cargo.png", false, 32, 32, false);
-        add(_btnCargo);
-        cargoText = new ComponentText(
-            384+componentXOffset, 
-            319+componentYOffset,
-            '${cargo.summary()}');
-        add(cargoText);
+        _btnCargo = createButton(shield, 384, 319, "assets/gfx/sprites/cargo.png", '${cargo.summary()}');
 		
-		        // Ship slots
-        slot0 = new FlxButton(128, 191, "", new ShipCaller(player, 0).clickFn);
-        slot0.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
-        add(slot0);
-
-        slot1 = new FlxButton(160, 191, "", new ShipCaller(player, 1).clickFn);
-        slot1.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
-        add(slot1);
-
-        slot2 = new FlxButton(192, 191, "", new ShipCaller(player, 2).clickFn);
-        slot2.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
-        add(slot2);
-		
-        slot3 = new FlxButton(192, 159, "", new ShipCaller(player, 3).clickFn);
-        slot3.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
-        add(slot3);
-
-        slot4 = new FlxButton(192, 223, "", new ShipCaller(player, 4).clickFn);
-        slot4.loadGraphic("assets/gfx/sprites/empty.png", false, 32, 32, false);
-        add(slot4);
+        // Ship slots
+        slot0 = createShipSlot(128, 191, 0);
+        slot1 = createShipSlot(160, 191, 1);
+        slot2 = createShipSlot(192, 191, 2);
+        slot3 = createShipSlot(192, 159, 3);
+        slot4 = createShipSlot(192, 223, 4);
 
         // Go
         btnGo = new FlxButton(480, 415, "", goFn);
@@ -386,6 +345,16 @@ class BuildState extends FlxUIState
 		statSpd.text = '${ship.getSpeed()}';
 		statCarg.text = '${ship.getCargo()}';
 		statCur.text = '${player.getMoney()}';
+
+        if (carryingSprite != null) {
+            carryingSprite.setPosition(FlxG.mouse.x-16,FlxG.mouse.y-16);
+            if (FlxG.mouse.justReleased) {
+                remove(carryingSprite);
+                carryingSprite = null;
+                player.drop();
+            }
+        }
+
         super.update();
     }
 }

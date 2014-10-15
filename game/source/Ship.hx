@@ -83,9 +83,7 @@ class Ship
 		// Is this a valid spot?
 		//
 		Deb.assert(spot < nSpots);
-		if (emptySpot(spot)) {
-			return null;
-		}
+		Deb.assert(!emptySpot(spot));
 
 		// Undo the modifiers, and remove the component;
 		//

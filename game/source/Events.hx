@@ -90,7 +90,10 @@ class BattleSimulator
 			// How long until we escape?
 			//
 			var turnsToEscape:Int = (captainShip.getSpeed() == banditShip.getSpeed()) ? turnsToKillCaptain+1 : Math.ceil(banditShip.range/(captainShip.getSpeed()-banditShip.getSpeed()));
-
+			if (captainShip.getSpeed() < banditShip.getSpeed())
+			{
+				turnsToEscape = 500;
+			}
 			if (turnsToEscape < turnsToKillCaptain && turnsToEscape < turnsToKillBandit)
 			{
 				// Do we escape?
@@ -210,7 +213,7 @@ class BanditsEvent extends Event
 			}
 			captainShip.modHp(battleResults.hpDelta);
 		}
-		cptLog.add(duration, text);
+		cptLog.add(duration, text, true);
 	}
 }
 

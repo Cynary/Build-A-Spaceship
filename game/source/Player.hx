@@ -76,6 +76,7 @@ class Player
 			var banditShip1 = new Ship(5,0,0,1);
 			var banditShip2 = new Ship(10,0,0,1);
 			var banditShip3 = new Ship(10,4,2,3);
+			var banditShip4 = new Ship(10,4,5,35);
 			var mission:Array<Events.Event> = [
 				new Events.SolarWindEvent(cptLog, /* +speed */ 2, /* -hp */ 6),
 				new Events.BanditsEvent(cptLog,banditShip2),
@@ -94,10 +95,15 @@ class Player
 				new Events.BanditsEvent(cptLog,banditShip3),
 				new Events.BlackHoleEvent(cptLog, /* speed > */ 11, /* +speed */ 1, /* -hp */ 10)
 			];
+			var mission4:Array<Events.Event> = [
+				new Events.SolarWindEvent(cptLog, /* +speed */ 2, /* -hp */ 2),
+				new Events.BanditsEvent(cptLog,banditShip4),
+			];
 			var missions:Array< Array<Events.Event> > = [
 				mission,
 				mission2,
-				mission3
+				mission3,
+				mission4
 			];
 			var currentMission:Array<Events.Event> =  missions[missionNumber % missions.length];
 			for (event in currentMission)
